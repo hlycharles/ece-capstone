@@ -1,0 +1,5 @@
+# built files
+baseline/recognition/build
+
+# vscode
+.vscode
