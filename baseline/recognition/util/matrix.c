@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <math.h>
 #include <gsl/gsl_eigen.h>
 
 unsigned **matrix_transpose(unsigned **matrix, int r, int c) {
@@ -42,4 +43,14 @@ void eigen_system(unsigned **matrix, int size) {
     gsl_vector_complex *eval = gsl_vector_complex_calloc(size);
     gsl_matrix_complex *evec = gsl_matrix_complex_calloc(size, size);
     gsl_eigen_nonsymmv(m, eval, evec, w);
+}
+
+// calculate Euclidean distance between two vectors
+int vec_dist(unsigned *v1, unsigned *v2, int len) {
+    int result = 0;
+    for (int i = 0; i < len; i++) {
+        int diff = v1[i] - v2[i];
+        len += diff * diff;
+    }
+    return (int)(sqrt(result));
 }

@@ -39,7 +39,7 @@ unsigned *calculateAvgImg() {
 
 void calculateEigenElems(unsigned *avgImg) {
     unsigned **imgs = readImgs();
-    unsigned **normalized = malloc(imgSetSize * sizeof(unsigned ()));
+    unsigned **normalized = malloc(imgSetSize * sizeof(unsigned));
     for (int i = 0; i < imgSetSize; i++) {
         normalized[i] = malloc(imgSize * imgSize * sizeof(unsigned));
         for (int j = 0; j < imgSize * imgSize; j++) {
