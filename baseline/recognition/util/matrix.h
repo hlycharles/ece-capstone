@@ -6,4 +6,6 @@ unsigned **matrix_transpose(unsigned **matrix, int r, int c);
 void eigen_system(unsigned **matrix, int size);
 int vec_dist(unsigned *v1, unsigned *v2, int len);
 
+void free_matrix(unsigned **m, int r);
+
 #endif

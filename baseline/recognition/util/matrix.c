@@ -7,7 +7,7 @@ unsigned **matrix_transpose(unsigned **matrix, int r, int c) {
     for (int j = 0; j < c; j++) {
         result[j] = malloc(r * sizeof(unsigned));
         for (int i = 0; i < r; i++) {
-            result[j][r - i - 1] = matrix[i][j];
+            result[j][i] = matrix[i][j];
         }
     }
     return result;
@@ -53,4 +53,12 @@ int vec_dist(unsigned *v1, unsigned *v2, int len) {
         len += diff * diff;
     }
     return (int)(sqrt(result));
+}
+
+// free matrix
+void free_matrix(unsigned **m, int r) {
+    for (int i = 0; i < r; i++) {
+        free(m[i]);
+    }
+    free(m);
 }
