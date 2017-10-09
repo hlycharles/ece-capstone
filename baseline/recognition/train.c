@@ -1,21 +1,15 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "util/matrix.h"
+#include "util/io.h"
 
-int imgSize = 20;
+int imgSize = 3;
 
-int imgSetSize = 60;
-
-unsigned **readImgs() {
-    return NULL;
-}
-
-void storeAvgImg(unsigned *img) {
-    return;
-}
+int imgSetSize = 2;
 
 unsigned *calculateAvgImg() {
-    unsigned **imgs = readImgs();
+    unsigned **imgs = readImgs(imgSize, imgSetSize);
     unsigned *avgImg = malloc(imgSize * imgSize * sizeof(unsigned));
     // init average image
     for (int i = 0; i < imgSize * imgSize; i++) {
@@ -33,12 +27,12 @@ unsigned *calculateAvgImg() {
         avgImg[i] /= imgSetSize;
     }
 
-    storeAvgImg(avgImg);
+    storeVec(avgImg, imgSize, "./avg.txt");
     return avgImg;
 }
 
 void calculateEigenElems(unsigned *avgImg) {
-    unsigned **imgs = readImgs();
+    unsigned **imgs = readImgs(imgSize, imgSetSize);
     unsigned **normalized = malloc(imgSetSize * sizeof(unsigned));
     for (int i = 0; i < imgSetSize; i++) {
         normalized[i] = malloc(imgSize * imgSize * sizeof(unsigned));
@@ -53,11 +47,21 @@ void calculateEigenElems(unsigned *avgImg) {
         normalized, imgSetSize, imgLen, normal_trans, imgLen, imgSetSize
     );
     // calculate eigen elements
-    eigen_system(normal_mult, imgSetSize);
+    double *eval = malloc(sizeof(double) * imgSetSize * 2);
+    double **evec = malloc(sizeof(double) * imgSetSize);
+    for (int i = 0; i < imgSetSize; i++) {
+        evec[i] = malloc(sizeof(double) * imgSetSize * 2);
+    }
+    eigen_system((int **)normal_mult, imgSetSize, eval, evec);
+
+    storeVec_double(eval, imgSetSize * 2, "./eval.txt");
  }
 
 int main() {
-    unsigned *avgImg = calculateAvgImg();
+    unsigned *avg = calculateAvgImg(); 
+    
+    calculateEigenElems(avg);
 
+    free(avg);
     return 0;
 }

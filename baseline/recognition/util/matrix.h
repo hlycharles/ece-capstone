@@ -3,7 +3,7 @@
 
 unsigned **matrix_mult(unsigned **matrix1, int r1, int c1, unsigned **matrix2, int r2, int c2);
 unsigned **matrix_transpose(unsigned **matrix, int r, int c);
-void eigen_system(unsigned **matrix, int size);
+void eigen_system(int **matrix, int size, double *eva, double **eve);
 int vec_dist(unsigned *v1, unsigned *v2, int len);
 
 void free_matrix(unsigned **m, int r);
