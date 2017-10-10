@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "util/matrix.h"
 #include "util/io.h"
@@ -62,13 +63,9 @@ int processImage(int *img) {
     double *wvec = malloc(sizeof(int) * imgSetSize * 2);
     double **evecs = readEVecs();
     for (int i = 0; i < imgSetSize; i++) {
-        double *evec = malloc(sizeof(int) * imgSize * imgSize * 2);
-        for (int e = 0; e < imgSize * imgSize * 2; e++) {
-            evec[e] = evecs[i][e];
-        }
+        double *evec = evecs[i];
         double real, img;
         calcWeightVectorElem(evec, normalized, &real, &img);
-        free(evec);
         wvec[2 * i] = real;
         wvec[2 * i + 1] = img;
     }
@@ -88,12 +85,9 @@ void outputFaceIndex(int faceIndex) {}
 
 int main() {
 
-    // keep processing input images
-    while (1) {
-        int *inputImg = readInputImage();
-        int faceIndex = processImage(inputImg);
-        outputFaceIndex(faceIndex);
-    }
+    int *inputImg = readInputImage();
+    int faceIndex = processImage(inputImg);
+    outputFaceIndex(faceIndex);
 
     return 0;
 }
