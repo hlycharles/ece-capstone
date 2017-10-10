@@ -2,10 +2,10 @@
 #include <math.h>
 #include <gsl/gsl_eigen.h>
 
-unsigned **matrix_transpose(unsigned **matrix, int r, int c) {
-    unsigned **result = malloc(sizeof(unsigned *) * c);
+int **matrix_transpose(int **matrix, int r, int c) {
+    int **result = malloc(sizeof(int *) * c);
     for (int j = 0; j < c; j++) {
-        result[j] = malloc(r * sizeof(unsigned));
+        result[j] = malloc(r * sizeof(int));
         for (int i = 0; i < r; i++) {
             result[j][i] = matrix[i][j];
         }
@@ -13,13 +13,13 @@ unsigned **matrix_transpose(unsigned **matrix, int r, int c) {
     return result;
 }
 
-unsigned **matrix_mult(unsigned **matrix1, int r1, int c1, unsigned **matrix2, int r2, int c2) {
+int **matrix_mult(int **matrix1, int r1, int c1, int **matrix2, int r2, int c2) {
     if (c1 != r2) {
         return NULL;
     }
-    unsigned **result = malloc(sizeof(unsigned *) * r1);
+    int **result = malloc(sizeof(int *) * r1);
     for (int i = 0; i < r1; i++) {
-        result[i] = malloc(c2 * sizeof(unsigned));
+        result[i] = malloc(c2 * sizeof(int));
         for (int j = 0; j < c2; j++) {
             int sum = 0;
             for (int k = 0; k < c1; k++) {
@@ -62,7 +62,7 @@ void eigen_system(int **matrix, int size, double *eva, double **eve) {
 }
 
 // calculate Euclidean distance between two vectors
-int vec_dist(unsigned *v1, unsigned *v2, int len) {
+int vec_dist(int *v1, int *v2, int len) {
     int result = 0;
     for (int i = 0; i < len; i++) {
         int diff = v1[i] - v2[i];
@@ -72,7 +72,7 @@ int vec_dist(unsigned *v1, unsigned *v2, int len) {
 }
 
 // free matrix
-void free_matrix(unsigned **m, int r) {
+void free_matrix(int **m, int r) {
     for (int i = 0; i < r; i++) {
         free(m[i]);
     }

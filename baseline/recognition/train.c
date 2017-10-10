@@ -8,16 +8,16 @@ int imgSize = 3;
 
 int imgSetSize = 2;
 
-unsigned *calculateAvgImg() {
-    unsigned **imgs = readImgs(imgSize, imgSetSize);
-    unsigned *avgImg = malloc(imgSize * imgSize * sizeof(unsigned));
+int *calculateAvgImg() {
+    int **imgs = readImgs(imgSize, imgSetSize);
+    int *avgImg = malloc(imgSize * imgSize * sizeof(int));
     // init average image
     for (int i = 0; i < imgSize * imgSize; i++) {
         avgImg[i] = 0;
     }
     // calculate aggregate sum for each pixel
     for (int c = 0; c < imgSetSize; c++) {
-        unsigned *img = imgs[c];
+        int *img = imgs[c];
         for (int i = 0; i < imgSize * imgSize; i++) {
             avgImg[i] += img[i];
         }
@@ -31,19 +31,19 @@ unsigned *calculateAvgImg() {
     return avgImg;
 }
 
-void calculateEigenElems(unsigned *avgImg) {
-    unsigned **imgs = readImgs(imgSize, imgSetSize);
-    unsigned **normalized = malloc(imgSetSize * sizeof(unsigned));
+void calculateEigenElems(int *avgImg) {
+    int **imgs = readImgs(imgSize, imgSetSize);
+    int **normalized = malloc(imgSetSize * sizeof(int));
     for (int i = 0; i < imgSetSize; i++) {
-        normalized[i] = malloc(imgSize * imgSize * sizeof(unsigned));
+        normalized[i] = malloc(imgSize * imgSize * sizeof(int));
         for (int j = 0; j < imgSize * imgSize; j++) {
             normalized[i][j] = imgs[i][j] - avgImg[j];
         }
     }
     // preprocess matrices
     int imgLen = imgSize * imgSetSize;
-    unsigned **normal_trans = matrix_transpose(normalized, imgSetSize, imgLen);
-    unsigned **normal_mult = matrix_mult(
+    int **normal_trans = matrix_transpose(normalized, imgSetSize, imgLen);
+    int **normal_mult = matrix_mult(
         normalized, imgSetSize, imgLen, normal_trans, imgLen, imgSetSize
     );
     // calculate eigen elements
@@ -58,7 +58,7 @@ void calculateEigenElems(unsigned *avgImg) {
  }
 
 int main() {
-    unsigned *avg = calculateAvgImg(); 
+    int *avg = calculateAvgImg(); 
     
     calculateEigenElems(avg);
 

@@ -6,40 +6,36 @@ int imgSize = 20;
 
 int imgSetSize = 60;
 
-unsigned **readImgs() {
+int *readInputImage() {
     return NULL;
 }
 
-unsigned *readInputImage() {
+int *readAvgImage() {
     return NULL;
 }
 
-unsigned *readAvgImage() {
+int **readEVecs() {
     return NULL;
 }
 
-unsigned **readEVecs() {
+int **readWVecs() {
     return NULL;
 }
 
-unsigned **readWVecs() {
-    return NULL;
-}
-
-int calcWeightVectorElem(unsigned *evec, unsigned *normalized) {
+int calcWeightVectorElem(int *evec, int *normalized) {
     int imgLen = imgSize * imgSize;
     // convert to multiplicable forms
-    unsigned **evec_m = malloc(sizeof(unsigned *));
-    evec_m[0] = malloc(sizeof(unsigned) * imgLen);
+    int **evec_m = malloc(sizeof(int *));
+    evec_m[0] = malloc(sizeof(int) * imgLen);
     for (int i = 0; i < imgLen; i++) {
         evec_m[0][i] = evec[i];
     }
-    unsigned **normalized_m = malloc(sizeof(unsigned *) * imgLen);
+    int **normalized_m = malloc(sizeof(int *) * imgLen);
     for (int i = 0; i < imgLen; i++) {
-        normalized_m[i] = malloc(sizeof(unsigned));
+        normalized_m[i] = malloc(sizeof(int));
         normalized_m[i][0] = normalized[i];
     }
-    unsigned **w_m = matrix_mult(evec_m, 1, imgLen, normalized_m, imgLen, 1);
+    int **w_m = matrix_mult(evec_m, 1, imgLen, normalized_m, imgLen, 1);
 
     int result = w_m[0][0];
     free(w_m);
@@ -48,12 +44,12 @@ int calcWeightVectorElem(unsigned *evec, unsigned *normalized) {
     return result;
 }
 
-int findFaceIndex(unsigned *wvec) {
+int findFaceIndex(int *wvec) {
     int index = -1;
     int minDist = -1;
-    unsigned **wvecs = readWVecs();
+    int **wvecs = readWVecs();
     for (int i = 0; i < imgSetSize; i++) {
-        unsigned *currVec = malloc(sizeof(unsigned) * (imgSetSize - 1));
+        int *currVec = malloc(sizeof(int) * (imgSetSize - 1));
         for (int j = 0; j < imgSetSize - 1; j++) {
             currVec[j] = wvecs[i][j];
         }
@@ -67,19 +63,19 @@ int findFaceIndex(unsigned *wvec) {
 }
 
 // return index of person recognized, -1 if not a person
-int processImage(unsigned *img) {
-    unsigned *avgImg = readInputImage();
+int processImage(int *img) {
+    int *avgImg = readInputImage();
     // calculate normalized image
-    unsigned *normalized = malloc(imgSize * imgSize * sizeof(unsigned));
+    int *normalized = malloc(imgSize * imgSize * sizeof(int));
     for (int i = 0; i < imgSize * imgSize; i++) {
         normalized[i] = img[i] - avgImg[i];
     }
 
     // calculate weight vector
-    unsigned *wvec = malloc(sizeof(unsigned) * (imgSetSize - 1));
-    unsigned **evecs = readEVecs();
+    int *wvec = malloc(sizeof(int) * (imgSetSize - 1));
+    int **evecs = readEVecs();
     for (int i = 0; i < imgSetSize - 1; i++) {
-        unsigned *evec = malloc(sizeof(unsigned) * imgSize * imgSize);
+        int *evec = malloc(sizeof(int) * imgSize * imgSize);
         for (int e = 0; e < imgSize * imgSize; e++) {
             evec[e] = evecs[i][e];
         }
@@ -105,7 +101,7 @@ int main() {
 
     // keep processing input images
     while (1) {
-        unsigned *inputImg = readInputImage();
+        int *inputImg = readInputImage();
         int faceIndex = processImage(inputImg);
         outputFaceIndex(faceIndex);
     }

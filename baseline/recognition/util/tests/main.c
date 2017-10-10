@@ -5,9 +5,9 @@
 
 int testTranspose() {
     int r = 5, c = 2;
-    unsigned **m = malloc(sizeof(unsigned *) * r);
+    int **m = malloc(sizeof(int *) * r);
     for (int i = 0; i < r; i++) {
-        m[i] = malloc(sizeof(unsigned) * c);
+        m[i] = malloc(sizeof(int) * c);
     }
     for (int i = 0; i < r; i++) {
         for (int j = 0; j < c; j++) {
@@ -15,7 +15,7 @@ int testTranspose() {
         }
     }
 
-    unsigned **tm = matrix_transpose(m, r, c);
+    int **tm = matrix_transpose(m, r, c);
     int success = 0;
     for (int i = 0; i < r; i++) {
         for (int j = 0; j < c; j++) {
@@ -35,7 +35,7 @@ int testTranspose() {
     return success;
 }
 
-int testEntry(unsigned **m, int i, int j, unsigned target) {
+int testEntry(int **m, int i, int j, int target) {
     if (m[i][j] != target) {
         printf("ERROR: row %d col %d : expect %d instead receive %d\n", i, j, target, m[i][j]);
         return -1;
@@ -45,9 +45,9 @@ int testEntry(unsigned **m, int i, int j, unsigned target) {
 
 int testMult() {
     int r1 = 4, c1 = 2;
-    unsigned **m = malloc(sizeof(unsigned *) * r1);
+    int **m = malloc(sizeof(int *) * r1);
     for (int i = 0; i < r1; i++) {
-        m[i] = malloc(sizeof(unsigned) * c1);
+        m[i] = malloc(sizeof(int) * c1);
     }
     m[0][0] = 2;
     m[0][1] = 5;
@@ -59,9 +59,9 @@ int testMult() {
     m[3][1] = 30;
 
     int r2 = 2, c2 = 3;
-    unsigned **n = malloc(sizeof(unsigned *) * r2);
+    int **n = malloc(sizeof(int *) * r2);
     for (int i = 0; i < r2; i++) {
-        n[i] = malloc(sizeof(unsigned) * c2);
+        n[i] = malloc(sizeof(int) * c2);
     }
     n[0][0] = 12;
     n[0][1] = 80;
@@ -71,7 +71,7 @@ int testMult() {
     n[1][2] = 15;
 
     int success = 0;
-    unsigned **t = matrix_mult(m, r1, c1, n, r2, c2);
+    int **t = matrix_mult(m, r1, c1, n, r2, c2);
     success += testEntry(t, 0, 0, 29);
     success += testEntry(t, 0, 1, 190);
     success += testEntry(t, 0, 2, 101);
