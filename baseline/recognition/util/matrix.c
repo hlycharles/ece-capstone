@@ -31,6 +31,40 @@ int **matrix_mult(int **matrix1, int r1, int c1, int **matrix2, int r2, int c2) 
     return result;
 }
 
+double *matrix_mult_cplx(int **m, int r1, int c1, double *v, int r2) {
+    if (c1 * 2 != r2) {
+        return NULL;
+    }
+    double *result = malloc(sizeof(double) * r1 * 2);
+    for (int i = 0; i < r1; i++) {
+        double real = 0;
+        double img = 0;
+        for (int j = 0; j < c1; j++) {
+            real += m[i][j] * v[2 * j];
+            img += m[i][j] * v[2 * j + 1];
+        }
+        result[2 * i] = real;
+        result[2 * i + 1] = img;
+    }
+    return result;
+}
+
+double *matrix_mult_cplx_rev(double *v1, int c, int *v2, int r) {
+    if (c != r) {
+        return NULL;
+    }
+    double *result = malloc(sizeof(double) * 2);
+    double real = 0;
+    double img = 0;
+    for (int i = 0; i < c; i++) {
+        double real = 0;
+        double img = 0;
+        result[2 * c] += v1[2 * c] * v2[c];
+        result[2 * c + 1] += v1[2 * c + 1] * v2[c];
+    }
+    return result;
+}
+
 void eigen_system(int **matrix, int size, double *eva, double **eve) {
     gsl_eigen_nonsymmv_workspace *w = gsl_eigen_nonsymmv_alloc(size);
     gsl_matrix *m = gsl_matrix_alloc(size, size);
@@ -62,11 +96,12 @@ void eigen_system(int **matrix, int size, double *eva, double **eve) {
 }
 
 // calculate Euclidean distance between two vectors
-int vec_dist(int *v1, int *v2, int len) {
-    int result = 0;
+int vec_dist(double *v1, double *v2, int len) {
+    double result = 0;
     for (int i = 0; i < len; i++) {
-        int diff = v1[i] - v2[i];
-        len += diff * diff;
+        double diffReal = v1[2 * i] - v2[2 * i];
+        double diffImg = v1[2 * i + 1] - v2[2 * i + 1];
+        result += diffReal * diffReal + diffImg * diffImg;
     }
     return (int)(sqrt(result));
 }

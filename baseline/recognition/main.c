@@ -1,59 +1,46 @@
 #include <stdlib.h>
 
 #include "util/matrix.h"
+#include "util/io.h"
 
-int imgSize = 20;
+int imgSize = 3;
 
-int imgSetSize = 60;
+int imgSetSize = 2;
 
 int *readInputImage() {
-    return NULL;
+    return readImg(imgSize, "./input.txt");
 }
 
 int *readAvgImage() {
-    return NULL;
+    return readImg(imgSize, "./avg.txt");
 }
 
-int **readEVecs() {
-    return NULL;
+double **readEVecs() {
+    return readCplxMatrix(imgSetSize, imgSize * imgSize, "./evec.txt");
 }
 
-int **readWVecs() {
-    return NULL;
+double **readWVecs() {
+    return readCplxMatrix(imgSetSize, imgSetSize, "./eval.txt");
 }
 
-int calcWeightVectorElem(int *evec, int *normalized) {
+void calcWeightVectorElem(double *evec, int *normalized, double *real, double *img) {
     int imgLen = imgSize * imgSize;
-    // convert to multiplicable forms
-    int **evec_m = malloc(sizeof(int *));
-    evec_m[0] = malloc(sizeof(int) * imgLen);
-    for (int i = 0; i < imgLen; i++) {
-        evec_m[0][i] = evec[i];
-    }
-    int **normalized_m = malloc(sizeof(int *) * imgLen);
-    for (int i = 0; i < imgLen; i++) {
-        normalized_m[i] = malloc(sizeof(int));
-        normalized_m[i][0] = normalized[i];
-    }
-    int **w_m = matrix_mult(evec_m, 1, imgLen, normalized_m, imgLen, 1);
 
-    int result = w_m[0][0];
+    double *w_m = matrix_mult_cplx_rev(evec, imgLen, normalized, imgLen);
+
+    *real = w_m[0];
+    *img = w_m[1];
+
     free(w_m);
-    free(evec_m);
-    free(normalized_m);
-    return result;
 }
 
-int findFaceIndex(int *wvec) {
+int findFaceIndex(double *wvec) {
     int index = -1;
     int minDist = -1;
-    int **wvecs = readWVecs();
+    double **wvecs = readWVecs();
     for (int i = 0; i < imgSetSize; i++) {
-        int *currVec = malloc(sizeof(int) * (imgSetSize - 1));
-        for (int j = 0; j < imgSetSize - 1; j++) {
-            currVec[j] = wvecs[i][j];
-        }
-        int dist = vec_dist(wvec, currVec, imgSetSize - 1);
+        double *currVec = wvecs[i];
+        int dist = vec_dist(wvec, currVec, imgSetSize);
         if (minDist < 0 || dist < minDist) {
             minDist = dist;
             index = i;
@@ -72,16 +59,18 @@ int processImage(int *img) {
     }
 
     // calculate weight vector
-    int *wvec = malloc(sizeof(int) * (imgSetSize - 1));
-    int **evecs = readEVecs();
-    for (int i = 0; i < imgSetSize - 1; i++) {
-        int *evec = malloc(sizeof(int) * imgSize * imgSize);
-        for (int e = 0; e < imgSize * imgSize; e++) {
+    double *wvec = malloc(sizeof(int) * imgSetSize * 2);
+    double **evecs = readEVecs();
+    for (int i = 0; i < imgSetSize; i++) {
+        double *evec = malloc(sizeof(int) * imgSize * imgSize * 2);
+        for (int e = 0; e < imgSize * imgSize * 2; e++) {
             evec[e] = evecs[i][e];
         }
-        int weight = calcWeightVectorElem(evec, normalized);
+        double real, img;
+        calcWeightVectorElem(evec, normalized, &real, &img);
         free(evec);
-        wvec[i] = weight;
+        wvec[2 * i] = real;
+        wvec[2 * i + 1] = img;
     }
 
     // find the face index
