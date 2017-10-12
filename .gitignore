@@ -1,5 +1,11 @@
 # built files
 baseline/recognition/build
 
+# training assets
+baseline/recognition/training
+
+# image and training data
+baseline/recognition/data
+
 # vscode
 .vscode

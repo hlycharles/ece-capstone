@@ -3,7 +3,7 @@
 
 int **readImgs(int imgSize, int imgSetSize) {
     FILE *fp;
-    fp = fopen("./imgs.txt", "r");
+    fp = fopen("../data/imgs.txt", "r");
     int val;
     int **result = malloc(sizeof(int *) * imgSetSize);
     for (int i = 0; i < imgSetSize; i++) {

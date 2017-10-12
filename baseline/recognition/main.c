@@ -9,19 +9,19 @@ int imgSize = 3;
 int imgSetSize = 2;
 
 int *readInputImage() {
-    return readImg(imgSize, "./input.txt");
+    return readImg(imgSize, "../data/input.txt");
 }
 
 int *readAvgImage() {
-    return readImg(imgSize, "./avg.txt");
+    return readImg(imgSize, "../data/avg.txt");
 }
 
 double **readEVecs() {
-    return readCplxMatrix(imgSetSize, imgSize * imgSize, "./evec.txt");
+    return readCplxMatrix(imgSetSize, imgSize * imgSize, "../data/evec.txt");
 }
 
 double **readWVecs() {
-    return readCplxMatrix(imgSetSize, imgSetSize, "./eval.txt");
+    return readCplxMatrix(imgSetSize, imgSetSize, "../data/eval.txt");
 }
 
 void calcWeightVectorElem(double *evec, int *normalized, double *real, double *img) {

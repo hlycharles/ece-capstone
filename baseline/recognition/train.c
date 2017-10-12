@@ -27,7 +27,7 @@ int *calculateAvgImg() {
         avgImg[i] /= imgSetSize;
     }
 
-    storeVec(avgImg, imgSize, "./avg.txt");
+    storeVec(avgImg, imgSize, "../data/avg.txt");
     return avgImg;
 }
 
@@ -57,11 +57,11 @@ void calculateEigenElems(int *avgImg) {
     }
     eigen_system((int **)normal_mult, imgSetSize, eval, evec);
 
-    storeVec_double(eval, imgSetSize * 2, "./eval.txt");
+    storeVec_double(eval, imgSetSize * 2, "../data/eval.txt");
 
     for (int i = 0; i < imgSetSize; i++) {
         double *final_vec = matrix_mult_cplx(normal_trans, imgLen, imgSetSize, evec[i], imgSetSize * 2);
-        storeVec_double(final_vec, imgLen * 2, "./evec.txt");
+        storeVec_double(final_vec, imgLen * 2, "../data/evec.txt");
     }
  }
 
