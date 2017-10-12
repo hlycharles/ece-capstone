@@ -27,11 +27,15 @@ def saveImg(imgPath, file):
 
 def encodeImgs(path, destination):
     file = open(destination, "w")
+    imgFiles = []
     for filename in os.listdir(path):
         if (isImg(filename)):
-            if (not path.endswith("/")):
-                path += "/"
-                saveImg(path + filename, file)
+            imgFiles.append(filename)
+    if (not path.endswith("/")):
+        path += "/"
+    imgFiles.sort()
+    for filename in imgFiles:
+        saveImg(path + filename, file)
     file.close()
 
 if __name__ == "__main__":
