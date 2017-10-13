@@ -1,11 +1,17 @@
 # built files
 baseline/recognition/build
 
+# sample input images
+baseline/recognition/input
+
 # training assets
 baseline/recognition/training
 
 # image and training data
 baseline/recognition/data
+
+# DS Store
+.DS_Store
 
 # vscode
 .vscode

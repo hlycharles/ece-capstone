@@ -57,11 +57,12 @@ double *matrix_mult_cplx_rev(double *v1, int c, int *v2, int r) {
     double real = 0;
     double img = 0;
     for (int i = 0; i < c; i++) {
-        double real = 0;
-        double img = 0;
-        result[2 * c] += v1[2 * c] * v2[c];
-        result[2 * c + 1] += v1[2 * c + 1] * v2[c];
+        real += v1[2 * i] * v2[i];
+        // printf("real: %.3f\n", real);
+        img += v1[2 * i + 1] * v2[i];
     }
+    result[0] = real;
+    result[1] = img;
     return result;
 }
 
@@ -88,8 +89,8 @@ void eigen_system(int **matrix, int size, double *eva, double **eve) {
     if (eve != NULL) {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                eve[i][2 * j] = GSL_REAL(gsl_matrix_complex_get(evec, i, j));
-                eve[i][2 * j + 1] = GSL_IMAG(gsl_matrix_complex_get(evec, i, j));
+                eve[i][2 * j] = GSL_REAL(gsl_matrix_complex_get(evec, j, i));
+                eve[i][2 * j + 1] = GSL_IMAG(gsl_matrix_complex_get(evec, j, i));
             }
         }
     }
@@ -100,7 +101,9 @@ int vec_dist(double *v1, double *v2, int len) {
     double result = 0;
     for (int i = 0; i < len; i++) {
         double diffReal = v1[2 * i] - v2[2 * i];
+        // printf("diffReal: %.3f\n", diffReal);
         double diffImg = v1[2 * i + 1] - v2[2 * i + 1];
+        // printf("diffImg: %.3f\n", diffImg);
         result += diffReal * diffReal + diffImg * diffImg;
     }
     return (int)(sqrt(result));

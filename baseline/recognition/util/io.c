@@ -1,6 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+int readInt(char path[]) {
+    FILE *fp;
+    fp = fopen(path, "r");
+    int result;
+    fscanf(fp, "%d", &result);
+    fclose(fp);
+    return result;
+}
+
 int **readImgs(int imgSize, int imgSetSize) {
     FILE *fp;
     fp = fopen("../data/imgs.txt", "r");
@@ -37,8 +46,8 @@ double **readCplxMatrix(int r, int c, char path[]) {
     for (int i = 0; i < r; i++) {
         result[i] = malloc(sizeof(double) * c * 2);
         for (int j = 0; j < c * 2; j++) {
-            int val;
-            fscanf(fp, "%d", &val);
+            double val;
+            fscanf(fp, "%lf", &val);
             result[i][j] = val;
         }
     }
@@ -48,7 +57,7 @@ double **readCplxMatrix(int r, int c, char path[]) {
 void storeVec(int *v, int size, char path[]) {
     FILE *fp;
     fp = fopen(path, "w");
-    for (int i = 0; i < size * size; i++) {
+    for (int i = 0; i < size; i++) {
         fprintf(fp, "%d\n", v[i]);
     }
     fclose(fp);
@@ -57,8 +66,19 @@ void storeVec(int *v, int size, char path[]) {
 void storeVec_double(double *v, int size, char path[]) {
     FILE *fp;
     fp = fopen(path, "w");
-    for (int i = 0; i < size * size; i++) {
+    for (int i = 0; i < size * 2; i++) {
         fprintf(fp, "%.3f\n", v[i]);
+    }
+    fclose(fp);
+}
+
+void storeMatrix_double(double **m, int r, int c, char path[]) {
+    FILE *fp;
+    fp = fopen(path, "w");
+    for (int i = 0; i < r; i++) {
+        for (int j = 0; j < c * 2; j++) {
+            fprintf(fp, "%.3f\n", m[i][j]);
+        } 
     }
     fclose(fp);
 }
