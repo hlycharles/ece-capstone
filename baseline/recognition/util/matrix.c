@@ -58,7 +58,6 @@ double *matrix_mult_cplx_rev(double *v1, int c, int *v2, int r) {
     double img = 0;
     for (int i = 0; i < c; i++) {
         real += v1[2 * i] * v2[i];
-        // printf("real: %.3f\n", real);
         img += v1[2 * i + 1] * v2[i];
     }
     result[0] = real;
@@ -101,9 +100,7 @@ int vec_dist(double *v1, double *v2, int len) {
     double result = 0;
     for (int i = 0; i < len; i++) {
         double diffReal = v1[2 * i] - v2[2 * i];
-        // printf("diffReal: %.3f\n", diffReal);
         double diffImg = v1[2 * i + 1] - v2[2 * i + 1];
-        // printf("diffImg: %.3f\n", diffImg);
         result += diffReal * diffReal + diffImg * diffImg;
     }
     return (int)(sqrt(result));

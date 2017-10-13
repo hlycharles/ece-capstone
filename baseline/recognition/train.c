@@ -55,8 +55,6 @@ void calculateEigenElems(int *avgImg) {
     }
     eigen_system((int **)normal_mult, imgSetSize, eval, evec);
 
-    // storeVec_double(eval, imgSetSize * 2, "../data/eval.txt");
-
     double **ws = malloc(sizeof(double *) * imgSetSize);
     double **vecs = malloc(sizeof(double *) * imgSetSize);
     for (int i = 0; i < imgSetSize; i++) {
@@ -65,7 +63,6 @@ void calculateEigenElems(int *avgImg) {
     }
     for (int i = 0; i < imgSetSize; i++) {
         double *final_vec = matrix_mult_cplx(normal_trans, imgLen, imgSetSize, evec[i], imgSetSize * 2);
-        // storeVec_double(final_vec, imgLen, "../data/evec.txt");
         for (int j = 0; j < imgLen * 2; j++) {
             vecs[i][j] = final_vec[j];
         }

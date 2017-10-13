@@ -65,7 +65,6 @@ int processImage(int *img) {
         double *evec = evecs[i];
         double real, img;
         calcWeightVectorElem(evec, normalized, &real, &img);
-        // printf("real: %.5f\n", real);
         wvec[2 * i] = real;
         wvec[2 * i + 1] = img;
     }
