@@ -26,32 +26,27 @@ int **readImgs(int imgSize, int imgSetSize) {
     return result;
 }
 
-int *readImg(int imgSize, char path[]) {
+void readImg(int imgSize, char path[], int dest[]) {
     FILE *fp;
     fp = fopen(path, "r");
-    int *result = malloc(sizeof(int) * imgSize * imgSize);
     for (int i = 0; i < imgSize * imgSize; i++) {
         int val;
         fscanf(fp, "%d", &val);
-        result[i] = val;
+        dest[i] = val;
     }
     fclose(fp);
-    return result;
 }
 
-double **readCplxMatrix(int r, int c, char path[]) {
+void readCplxMatrix(int r, int c, char path[], double dest[][c*2]) {
     FILE *fp;
     fp = fopen(path, "r");
-    double **result = malloc(sizeof(double *) * r);
     for (int i = 0; i < r; i++) {
-        result[i] = malloc(sizeof(double) * c * 2);
         for (int j = 0; j < c * 2; j++) {
             double val;
             fscanf(fp, "%lf", &val);
-            result[i][j] = val;
+            dest[i][j] = val;
         }
     }
-    return result;
 }
 
 void storeVec(int *v, int size, char path[]) {

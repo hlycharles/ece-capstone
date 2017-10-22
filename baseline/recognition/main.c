@@ -1,42 +1,45 @@
-#include <stdlib.h>
 #include <stdio.h>
 
 #include "util/matrix.h"
 #include "util/io.h"
 
-int imgSize, imgSetSize;
+const int imgSize = 20;
+const int imgSetSize = 6;
+const int imgLen = imgSize * imgSize;
 
-int *readInputImage() {
-    return readImg(imgSize, "../data/input.txt");
+// input image
+int inputImg[imgLen];
+// average image
+int avgImg[imgLen];
+
+// pretrained eigenvectors
+double evecs[imgSetSize][imgLen * 2];
+// pretrained weight vectors
+double wvecs[imgSetSize][imgSetSize * 2];
+
+void readInputImage() {
+    readImg(imgSize, "../data/input.txt", inputImg);
 }
 
-int *readAvgImage() {
-    return readImg(imgSize, "../data/avg.txt");
+void readAvgImage() {
+    readImg(imgSize, "../data/avg.txt", avgImg);
 }
 
-double **readEVecs() {
-    return readCplxMatrix(imgSetSize, imgSize * imgSize, "../data/evec.txt");
+void readEVecs() {
+    readCplxMatrix(imgSetSize, imgLen, "../data/evec.txt", evecs);
 }
 
-double **readWVecs() {
-    return readCplxMatrix(imgSetSize, imgSetSize, "../data/eval.txt");
+void readWVecs() {
+    readCplxMatrix(imgSetSize, imgSetSize, "../data/eval.txt", wvecs);
 }
 
 void calcWeightVectorElem(double *evec, int *normalized, double *real, double *img) {
-    int imgLen = imgSize * imgSize;
-
-    double *w_m = matrix_mult_cplx_rev(evec, imgLen, normalized, imgLen);
-
-    *real = w_m[0];
-    *img = w_m[1];
-
-    free(w_m);
+    matrix_mult_cplx_rev(evec, imgLen, normalized, imgLen, real, img);
 }
 
 int findFaceIndex(double *wvec) {
     int index = -1;
     int minDist = -1;
-    double **wvecs = readWVecs();
     for (int i = 0; i < imgSetSize; i++) {
         double *currVec = wvecs[i];
         int dist = vec_dist(wvec, currVec, imgSetSize);
@@ -50,17 +53,15 @@ int findFaceIndex(double *wvec) {
 }
 
 // return index of person recognized, -1 if not a person
-int processImage(int *img) {
-    int *avgImg = readAvgImage();
+int processImage() {
     // calculate normalized image
-    int *normalized = malloc(imgSize * imgSize * sizeof(int));
-    for (int i = 0; i < imgSize * imgSize; i++) {
-        normalized[i] = img[i] - avgImg[i];
+    int normalized[imgLen];
+    for (int i = 0; i < imgLen; i++) {
+        normalized[i] = inputImg[i] - avgImg[i];
     }
 
     // calculate weight vector
-    double *wvec = malloc(sizeof(int) * imgSetSize * 2);
-    double **evecs = readEVecs();
+    double wvec[imgSetSize * 2];
     for (int i = 0; i < imgSetSize; i++) {
         double *evec = evecs[i];
         double real, img;
@@ -72,10 +73,6 @@ int processImage(int *img) {
     // find the face index
     int faceIndex = findFaceIndex(wvec);
 
-    // free memory
-    free(wvec);
-    free(normalized);
-
     return faceIndex;
 }
 
@@ -86,12 +83,13 @@ void outputFaceIndex(int faceIndex) {
 
 int main() {
 
-    imgSize = readInt("../data/img_size.txt");
+    readInputImage();
+    readAvgImage();
 
-    imgSetSize = readInt("../data/training_size.txt");
+    readEVecs();
+    readWVecs();
 
-    int *inputImg = readInputImage();
-    int faceIndex = processImage(inputImg);
+    int faceIndex = processImage();
     outputFaceIndex(faceIndex);
 
     return 0;

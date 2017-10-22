@@ -2,10 +2,10 @@
 #define IO_H
 
 int readInt(char path[]);
-int *readImg(int imgSize, char path[]);
+void readImg(int imgSize, char path[], int dest[]);
 int **readImgs(int imgSize, int imgSetSize);
 
-double **readCplxMatrix(int r, int c, char path[]);
+void readCplxMatrix(int r, int c, char path[], double dest[][c*2]);
 
 void storeVec(int *v, int size, char path[]);
 void storeVec_double(double *v, int size, char path[]);

@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <math.h>
-#include <gsl/gsl_eigen.h>
 
 int **matrix_transpose(int **matrix, int r, int c) {
     int **result = malloc(sizeof(int *) * c);
@@ -49,50 +48,20 @@ double *matrix_mult_cplx(int **m, int r1, int c1, double *v, int r2) {
     return result;
 }
 
-double *matrix_mult_cplx_rev(double *v1, int c, int *v2, int r) {
+void matrix_mult_cplx_rev(
+    double *v1, int c, int *v2, int r, double *real, double *img
+) {
     if (c != r) {
-        return NULL;
+        return;
     }
-    double *result = malloc(sizeof(double) * 2);
-    double real = 0;
-    double img = 0;
+    double realVal = 0;
+    double imgVal = 0;
     for (int i = 0; i < c; i++) {
-        real += v1[2 * i] * v2[i];
-        img += v1[2 * i + 1] * v2[i];
+        realVal += v1[2 * i] * v2[i];
+        imgVal += v1[2 * i + 1] * v2[i];
     }
-    result[0] = real;
-    result[1] = img;
-    return result;
-}
-
-void eigen_system(int **matrix, int size, double *eva, double **eve) {
-    gsl_eigen_nonsymmv_workspace *w = gsl_eigen_nonsymmv_alloc(size);
-    gsl_matrix *m = gsl_matrix_alloc(size, size);
-    // populate gsl matrix
-    for (int i = 0; i < size; i++) {
-        for (int j = 0; j < size; j++) {
-            gsl_matrix_set(m, i, j, matrix[i][j]);
-        }
-    }
-    gsl_vector_complex *eval = gsl_vector_complex_calloc(size);
-    gsl_matrix_complex *evec = gsl_matrix_complex_calloc(size, size);
-    gsl_eigen_nonsymmv(m, eval, evec, w);
-
-    if (eva != NULL) {
-        for (int i = 0; i < size; i++) {
-            eva[2 * i] = GSL_VECTOR_REAL(eval, i);
-            eva[2 * i + 1] = GSL_VECTOR_IMAG(eval, i);
-        }
-    }
-
-    if (eve != NULL) {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                eve[i][2 * j] = GSL_REAL(gsl_matrix_complex_get(evec, j, i));
-                eve[i][2 * j + 1] = GSL_IMAG(gsl_matrix_complex_get(evec, j, i));
-            }
-        }
-    }
+    *real = realVal;
+    *img = imgVal;
 }
 
 // calculate Euclidean distance between two vectors

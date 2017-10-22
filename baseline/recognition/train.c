@@ -2,12 +2,14 @@
 #include <stdio.h>
 
 #include "util/matrix.h"
+#include "util/eigen.h"
 #include "util/io.h"
 
 int imgSize, imgSetSize;
 
+int **imgs;
+
 int *calculateAvgImg() {
-    int **imgs = readImgs(imgSize, imgSetSize);
     int *avgImg = malloc(imgSize * imgSize * sizeof(int));
     // init average image
     for (int i = 0; i < imgSize * imgSize; i++) {
@@ -30,7 +32,6 @@ int *calculateAvgImg() {
 }
 
 void calculateEigenElems(int *avgImg) {
-    int **imgs = readImgs(imgSize, imgSetSize);
     int **normalized = malloc(imgSetSize * sizeof(int *));
     for (int i = 0; i < imgSetSize; i++) {
         normalized[i] = malloc(imgSize * imgSize * sizeof(int));
@@ -67,13 +68,19 @@ void calculateEigenElems(int *avgImg) {
             vecs[i][j] = final_vec[j];
         }
         for (int k = 0; k < imgSetSize; k++) {
-            double *w_m = matrix_mult_cplx_rev(final_vec, imgLen, normalized[k], imgLen);
-            ws[k][2 * i] = w_m[0];
-            ws[k][2 * i + 1] = w_m[1];
+            double real, img;
+            matrix_mult_cplx_rev(final_vec, imgLen, normalized[k], imgLen, &real, &img);
+            ws[k][2 * i] = real;
+            ws[k][2 * i + 1] = img;
         }
+        free(final_vec);
     }
     storeMatrix_double(ws, imgSetSize, imgSetSize, "../data/eval.txt");
     storeMatrix_double(vecs, imgSetSize, imgLen, "../data/evec.txt");
+
+    free_matrix(normalized, imgSetSize);
+    free_matrix(normal_trans, imgLen);
+    free_matrix(normal_mult, imgSetSize);
 
     free(eval);
     free(evec);
@@ -88,6 +95,9 @@ int main() {
     imgSetSize = readInt("../data/training_size.txt");
     printf("training with %d images\n", imgSetSize);
 
+    printf("reading %d images\n", imgSetSize);
+    imgs = readImgs(imgSize, imgSetSize);
+
     printf("Calculating average image...\n");
     int *avg = calculateAvgImg(); 
 
@@ -95,6 +105,14 @@ int main() {
     calculateEigenElems(avg);
 
     printf("Done training\n");
+
+    printf("Freeing images\n");
+    for (int i = 0; i < imgSetSize; i++) {
+        free(imgs[i]);
+    }
+    free(imgs);
+
+    printf("Done\n");
 
     free(avg);
     return 0;
