@@ -1,5 +1,6 @@
 # built files
 baseline/recognition/build
+recognition/build
 
 # sample input images
 baseline/recognition/input
@@ -9,6 +10,7 @@ baseline/recognition/training
 
 # image and training data
 baseline/recognition/data
+recognition/data
 
 # backup files
 baseline/recognition/bak

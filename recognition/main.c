@@ -2,6 +2,10 @@
 
 #include "util/matrix.h"
 #include "util/io.h"
+#include "data/input.h"
+#include "data/avg.h"
+#include "data/evec.h"
+#include "data/eval.h"
 
 const int imgSize = 20;
 const int imgSetSize = 6;
@@ -18,19 +22,31 @@ double evecs[imgSetSize][imgLen * 2];
 double wvecs[imgSetSize][imgSetSize * 2];
 
 void readInputImage() {
-    readImg(imgSize, "../data/input.txt", inputImg);
+    for (int i = 0; i < imgLen; i++) {
+        inputImg[i] = inputImgVal[i];
+    }
 }
 
 void readAvgImage() {
-    readImg(imgSize, "../data/avg.txt", avgImg);
+    for (int i = 0; i < imgLen; i++) {
+        avgImg[i] = avgImgVal[i];
+    }
 }
 
 void readEVecs() {
-    readCplxMatrix(imgSetSize, imgLen, "../data/evec.txt", evecs);
+    for (int i = 0; i < imgSetSize; i++) {
+        for (int j = 0; j < imgLen * 2; j++) {
+            evecs[i][j] = evecsVal[i * imgLen * 2 + j];
+        }
+    }
 }
 
 void readWVecs() {
-    readCplxMatrix(imgSetSize, imgSetSize, "../data/eval.txt", wvecs);
+    for (int i = 0; i < imgSetSize; i++) {
+        for (int j = 0; j < imgSetSize * 2; j++) {
+            wvecs[i][j] = wvecsVal[i * imgSetSize * 2 + j];
+        }
+    }
 }
 
 void calcWeightVectorElem(double *evec, int *normalized, double *real, double *img) {
