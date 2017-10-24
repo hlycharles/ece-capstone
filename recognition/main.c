@@ -23,12 +23,14 @@ double evecs[6][800];
 double wvecs[6][12];
 
 void readInputImage() {
+#pragma HLS ARRAY_PARTITION variable=inputImg complete
     for (int i = 0; i < imgLen; i++) {
         inputImg[i] = inputImgVal[i];
     }
 }
 
 void readAvgImage() {
+#pragma HLS ARRAY_PARTITION variable=avgImg complete
     for (int i = 0; i < imgLen; i++) {
         avgImg[i] = avgImgVal[i];
     }
@@ -75,6 +77,7 @@ int processImage() {
     int normalized[imgLen];
     int i, j;
     for (i = 0; i < imgLen; i++) {
+#pragma HLS UNROLL
         normalized[i] = inputImg[i] - avgImg[i];
     }
 
