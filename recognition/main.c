@@ -9,17 +9,18 @@
 
 const int imgSize = 20;
 const int imgSetSize = 6;
-const int imgLen = imgSize * imgSize;
+// imgSize * imgSize
+const int imgLen = 400;
 
-// input image
-int inputImg[imgLen];
-// average image
-int avgImg[imgLen];
+// input image size: imgLen
+int inputImg[400];
+// average image size: imgLen
+int avgImg[400];
 
-// pretrained eigenvectors
-double evecs[imgSetSize][imgLen * 2];
-// pretrained weight vectors
-double wvecs[imgSetSize][imgSetSize * 2];
+// pretrained eigenvectors size: imgSetSize x (imgLen * 2)
+double evecs[6][800];
+// pretrained weight vectors size: imgSetSize x (imgSetSize * 2)
+double wvecs[6][12];
 
 void readInputImage() {
     for (int i = 0; i < imgLen; i++) {
@@ -72,18 +73,19 @@ int findFaceIndex(double *wvec) {
 int processImage() {
     // calculate normalized image
     int normalized[imgLen];
-    for (int i = 0; i < imgLen; i++) {
+    int i, j;
+    for (i = 0; i < imgLen; i++) {
         normalized[i] = inputImg[i] - avgImg[i];
     }
 
     // calculate weight vector
     double wvec[imgSetSize * 2];
-    for (int i = 0; i < imgSetSize; i++) {
-        double *evec = evecs[i];
+    for (j = 0; j < imgSetSize; j++) {
+        double *evec = evecs[j];
         double real, img;
         calcWeightVectorElem(evec, normalized, &real, &img);
-        wvec[2 * i] = real;
-        wvec[2 * i + 1] = img;
+        wvec[2 * j] = real;
+        wvec[2 * j + 1] = img;
     }
 
     // find the face index
