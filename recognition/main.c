@@ -12,21 +12,24 @@ const int imgSetSize = 6;
 // imgSize * imgSize
 const int imgLen = 400;
 
+int avgImg[imgLen];
+double evecs[imgSetSize][imgLen * 2];
+double wvecs[imgSetSize][imgSetSize * 2];
+
 void readInputImage(int inputImg[]) {
-#pragma HLS ARRAY_PARTITION variable=inputImg complete
     for (int i = 0; i < imgLen; i++) {
         inputImg[i] = inputImgVal[i];
     }
 }
 
-void readAvgImage(int avgImg[]) {
+void readAvgImage() {
 #pragma HLS ARRAY_PARTITION variable=avgImg complete
     for (int i = 0; i < imgLen; i++) {
         avgImg[i] = avgImgVal[i];
     }
 }
 
-void readEVecs(double evecs[][imgLen*2]) {
+void readEVecs() {
     for (int i = 0; i < imgSetSize; i++) {
         for (int j = 0; j < imgLen * 2; j++) {
             evecs[i][j] = evecsVal[i * imgLen * 2 + j];
@@ -34,7 +37,7 @@ void readEVecs(double evecs[][imgLen*2]) {
     }
 }
 
-void readWVecs(double wvecs[][imgSetSize*2]) {
+void readWVecs() {
     for (int i = 0; i < imgSetSize; i++) {
         for (int j = 0; j < imgSetSize * 2; j++) {
             wvecs[i][j] = wvecsVal[i * imgSetSize * 2 + j];
@@ -62,7 +65,13 @@ int findFaceIndex(double *wvec, double wvecs[][imgSetSize*2]) {
 }
 
 // return index of person recognized, -1 if not a person
-int processImage(int inputImg[], int avgImg[], double evecs[][imgLen*2], double wvecs[][imgSetSize*2]) {
+int processImage() {
+    //load data
+    int inputImg[imgLen];
+    readInputImage(inputImg);
+    readAvgImage();
+    readEVecs();
+    readWVecs();
     // calculate normalized image
     int normalized[imgLen];
     int i, j;
@@ -94,17 +103,7 @@ void outputFaceIndex(int faceIndex) {
 
 int main() {
 
-    int inputImg[imgLen];
-    int avgImg[imgLen];
-    readInputImage(inputImg);
-    readAvgImage(avgImg);
-
-    double evecs[imgSetSize][imgLen * 2];
-    double wvecs[imgSetSize][imgSetSize * 2];
-    readEVecs(evecs);
-    readWVecs(wvecs);
-
-    int faceIndex = processImage(inputImg, avgImg, evecs, wvecs);
+    int faceIndex = processImage();
     outputFaceIndex(faceIndex);
 
     return 0;
