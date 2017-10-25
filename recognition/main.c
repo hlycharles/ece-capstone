@@ -12,9 +12,9 @@ const int imgSetSize = 6;
 // imgSize * imgSize
 const int imgLen = 400;
 
-int avgImg[imgLen];
-double evecs[imgSetSize][imgLen * 2];
-double wvecs[imgSetSize][imgSetSize * 2];
+static int avgImg[imgLen];
+static double evecs[imgSetSize][imgLen * 2];
+static double wvecs[imgSetSize][imgSetSize * 2];
 
 void readInputImage(int inputImg[]) {
     for (int i = 0; i < imgLen; i++) {
