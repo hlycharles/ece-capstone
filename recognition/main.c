@@ -12,29 +12,19 @@ const int imgSetSize = 6;
 // imgSize * imgSize
 const int imgLen = 400;
 
-// input image size: imgLen
-int inputImg[400];
-// average image size: imgLen
-int avgImg[400];
-
-// pretrained eigenvectors size: imgSetSize x (imgLen * 2)
-double evecs[6][800];
-// pretrained weight vectors size: imgSetSize x (imgSetSize * 2)
-double wvecs[6][12];
-
-void readInputImage() {
+void readInputImage(int inputImg[]) {
     for (int i = 0; i < imgLen; i++) {
         inputImg[i] = inputImgVal[i];
     }
 }
 
-void readAvgImage() {
+void readAvgImage(int avgImg[]) {
     for (int i = 0; i < imgLen; i++) {
         avgImg[i] = avgImgVal[i];
     }
 }
 
-void readEVecs() {
+void readEVecs(double evecs[][imgLen*2]) {
     for (int i = 0; i < imgSetSize; i++) {
         for (int j = 0; j < imgLen * 2; j++) {
             evecs[i][j] = evecsVal[i * imgLen * 2 + j];
@@ -42,7 +32,7 @@ void readEVecs() {
     }
 }
 
-void readWVecs() {
+void readWVecs(double wvecs[][imgSetSize*2]) {
     for (int i = 0; i < imgSetSize; i++) {
         for (int j = 0; j < imgSetSize * 2; j++) {
             wvecs[i][j] = wvecsVal[i * imgSetSize * 2 + j];
@@ -54,7 +44,7 @@ void calcWeightVectorElem(double *evec, int *normalized, double *real, double *i
     matrix_mult_cplx_rev(evec, imgLen, normalized, imgLen, real, img);
 }
 
-int findFaceIndex(double *wvec) {
+int findFaceIndex(double *wvec, double wvecs[][imgSetSize*2]) {
     int index = -1;
     int minDist = -1;
     for (int i = 0; i < imgSetSize; i++) {
@@ -70,7 +60,7 @@ int findFaceIndex(double *wvec) {
 }
 
 // return index of person recognized, -1 if not a person
-int processImage() {
+int processImage(int inputImg[], int avgImg[], double evecs[][imgLen*2], double wvecs[][imgSetSize*2]) {
     // calculate normalized image
     int normalized[imgLen];
     int i, j;
@@ -89,7 +79,7 @@ int processImage() {
     }
 
     // find the face index
-    int faceIndex = findFaceIndex(wvec);
+    int faceIndex = findFaceIndex(wvec, wvecs);
 
     return faceIndex;
 }
@@ -101,13 +91,17 @@ void outputFaceIndex(int faceIndex) {
 
 int main() {
 
-    readInputImage();
-    readAvgImage();
+    int inputImg[imgLen];
+    int avgImg[imgLen];
+    readInputImage(inputImg);
+    readAvgImage(avgImg);
 
-    readEVecs();
-    readWVecs();
+    double evecs[imgSetSize][imgLen * 2];
+    double wvecs[imgSetSize][imgSetSize * 2];
+    readEVecs(evecs);
+    readWVecs(wvecs);
 
-    int faceIndex = processImage();
+    int faceIndex = processImage(inputImg, avgImg, evecs, wvecs);
     outputFaceIndex(faceIndex);
 
     return 0;
