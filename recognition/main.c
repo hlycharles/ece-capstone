@@ -28,5 +28,5 @@ int main() {
 
     int faceIndex = processImage(resizedInput);
 
-    return 0;
+    return faceIndex;
 }
