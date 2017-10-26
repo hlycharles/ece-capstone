@@ -29,4 +29,6 @@ int main() {
     int faceIndex = processImage(resizedInput);
 
     outputFaceIndex(faceIndex);
+
+    return 0;
 }
