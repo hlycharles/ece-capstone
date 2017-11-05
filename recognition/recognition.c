@@ -12,8 +12,8 @@ const int imgSetSize = 6;
 const int imgLen = 400;
 
 static int avgImg[imgLen];
-static double evecs[imgSetSize][imgLen * 2];
-static double wvecs[imgSetSize][imgSetSize * 2];
+static double evecs[imgSetSize][imgLen];
+static double wvecs[imgSetSize][imgSetSize];
 
 void readAvgImage() {
     for (int i = 0; i < imgLen; i++) {
@@ -23,25 +23,25 @@ void readAvgImage() {
 
 void readEVecs() {
     for (int i = 0; i < imgSetSize; i++) {
-        for (int j = 0; j < imgLen * 2; j++) {
-            evecs[i][j] = evecsVal[i * imgLen * 2 + j];
+        for (int j = 0; j < imgLen; j++) {
+            evecs[i][j] = evecsVal[i * imgLen + j];
         }
     }
 }
 
 void readWVecs() {
     for (int i = 0; i < imgSetSize; i++) {
-        for (int j = 0; j < imgSetSize * 2; j++) {
-            wvecs[i][j] = wvecsVal[i * imgSetSize * 2 + j];
+        for (int j = 0; j < imgSetSize; j++) {
+            wvecs[i][j] = wvecsVal[i * imgSetSize + j];
         }
     }
 }
 
-void calcWeightVectorElem(double *evec, int *normalized, double *real, double *img) {
-    matrix_mult_cplx_rev(evec, imgLen, normalized, imgLen, real, img);
+void calcWeightVectorElem(double *evec, int *normalized, double *dist) {
+    matrix_mult_double_rev(evec, imgLen, normalized, imgLen, dist);
 }
 
-int findFaceIndex(double *wvec, double wvecs[][imgSetSize*2]) {
+int findFaceIndex(double *wvec, double wvecs[][imgSetSize]) {
     int index = -1;
     int minDist = -1;
     for (int i = 0; i < imgSetSize; i++) {
@@ -66,13 +66,12 @@ int processImage(int inputImg[]) {
     }
 
     // calculate weight vector
-    double wvec[imgSetSize * 2];
+    double wvec[imgSetSize];
     for (j = 0; j < imgSetSize; j++) {
         double *evec = evecs[j];
-        double real, img;
-        calcWeightVectorElem(evec, normalized, &real, &img);
-        wvec[2 * j] = real;
-        wvec[2 * j + 1] = img;
+        double dist;
+        calcWeightVectorElem(evec, normalized, &dist);
+        wvec[j] = dist;
     }
 
     // find the face index

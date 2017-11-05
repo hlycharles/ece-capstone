@@ -13,9 +13,9 @@ int inputImg[imgLen];
 int avgImg[imgLen];
 
 // pretrained eigenvectors
-double evecs[imgSetSize][imgLen * 2];
+double evecs[imgSetSize][imgLen];
 // pretrained weight vectors
-double wvecs[imgSetSize][imgSetSize * 2];
+double wvecs[imgSetSize][imgSetSize];
 
 void readInputImage() {
     readImg(imgSize, "../data/input.txt", inputImg);
@@ -33,8 +33,8 @@ void readWVecs() {
     readCplxMatrix(imgSetSize, imgSetSize, "../data/eval.txt", wvecs);
 }
 
-void calcWeightVectorElem(double *evec, int *normalized, double *real, double *img) {
-    matrix_mult_cplx_rev(evec, imgLen, normalized, imgLen, real, img);
+void calcWeightVectorElem(double *evec, int *normalized, double *dist) {
+    matrix_mult_double_rev(evec, imgLen, normalized, imgLen, dist);
 }
 
 int findFaceIndex(double *wvec) {
@@ -61,13 +61,12 @@ int processImage() {
     }
 
     // calculate weight vector
-    double wvec[imgSetSize * 2];
+    double wvec[imgSetSize];
     for (int i = 0; i < imgSetSize; i++) {
         double *evec = evecs[i];
-        double real, img;
-        calcWeightVectorElem(evec, normalized, &real, &img);
-        wvec[2 * i] = real;
-        wvec[2 * i + 1] = img;
+        double dist;
+        calcWeightVectorElem(evec, normalized, &dist);
+        wvec[i] = dist;
     }
 
     // find the face index
