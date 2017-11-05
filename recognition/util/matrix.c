@@ -30,6 +30,17 @@ int **matrix_mult(int **matrix1, int r1, int c1, int **matrix2, int r2, int c2) 
     return result;
 }
 
+void matrix_mult_double_rev(double *v1, int c, int *v2, int r, double *result) {
+    if (c != r) {
+        return;
+    }
+    double total = 0;
+    for (int i = 0; i < c; i++) {
+        total += v1[i] * v2[i];
+    }
+    *result = total;
+}
+
 double *matrix_mult_cplx(int **m, int r1, int c1, double *v, int r2) {
     if (c1 * 2 != r2) {
         return NULL;
@@ -68,9 +79,8 @@ void matrix_mult_cplx_rev(
 int vec_dist(double *v1, double *v2, int len) {
     double result = 0;
     for (int i = 0; i < len; i++) {
-        double diffReal = v1[2 * i] - v2[2 * i];
-        double diffImg = v1[2 * i + 1] - v2[2 * i + 1];
-        result += diffReal * diffReal + diffImg * diffImg;
+        double diff = v1[i] - v2[i];
+        result += diff * diff;
     }
     return (int)(sqrt(result));
 }

@@ -30,5 +30,5 @@ int main() {
 
     outputFaceIndex(faceIndex);
 
-    return 0;
+    return faceIndex;
 }
