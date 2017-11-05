@@ -37,11 +37,11 @@ void readImg(int imgSize, char path[], int dest[]) {
     fclose(fp);
 }
 
-void readCplxMatrix(int r, int c, char path[], double dest[][c*2]) {
+void readCplxMatrix(int r, int c, char path[], double dest[][c]) {
     FILE *fp;
     fp = fopen(path, "r");
     for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c * 2; j++) {
+        for (int j = 0; j < c; j++) {
             double val;
             fscanf(fp, "%lf", &val);
             dest[i][j] = val;
@@ -71,8 +71,9 @@ void storeMatrix_double(double **m, int r, int c, char path[]) {
     FILE *fp;
     fp = fopen(path, "w");
     for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c * 2; j++) {
-            fprintf(fp, "%.3f\n", m[i][j]);
+        for (int j = 0; j < c; j++) {
+            // only store real part of the result
+            fprintf(fp, "%.3f\n", m[i][j * 2]);
         } 
     }
     fclose(fp);
