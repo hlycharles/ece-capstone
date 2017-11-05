@@ -10,11 +10,6 @@ void readInputImage(int inputImg[]) {
     }
 }
 
-// output face index
-void outputFaceIndex(int faceIndex) {
-    printf("face: %d\n", faceIndex);
-}
-
 int main() {
     initData();
 
