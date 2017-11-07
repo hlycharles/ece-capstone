@@ -22,6 +22,16 @@ void recognition(int a, int *result) {
 
 	static int pixelIndex = 0;
 
+	if (a == 300) {
+		int dist = dists[currentDist];
+		currentDist += 1;
+		if (currentDist >= 6) {
+			currentDist = 0;
+		}
+		*result = dist;
+		return;
+	}
+
 	inputImg[pixelIndex] = a;
 	pixelIndex++;
 
@@ -38,17 +48,7 @@ void recognition(int a, int *result) {
 		// resample(imgSize, imgSize, &(inputImg[0]), resizedInput);
 
 		int faceIndex = processImage(resizedInput, dists);
-
-		if (a == 1) {
-			int dist = dists[currentDist];
-			currentDist += 1;
-			if (currentDist >= 6) {
-				currentDist = 0;
-			}
-			*result = dist;
-		} else {
-			*result = faceIndex;
-		}
+		*result = faceIndex;
 	} else {
 		*result = -1;
 	}
