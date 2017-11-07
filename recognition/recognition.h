@@ -5,6 +5,6 @@ extern const int imgLen;
 extern const int imgSize;
 
 void initData();
-int processImage(int inputImg[]);
+int processImage(int inputImg[], int dists[]);
 
 #endif

@@ -3,12 +3,10 @@
 
 const int dimension = 20;
 
-int resample(int sr, int sc, int *src, int dest[]) {
-    printf("Resizing input image...\n");
+void resample(int sr, int sc, int *src, int dest[]) {
     // currently ignore images whose one dimension is less than 20
     if (sr < dimension || sc < dimension) {
-        printf("error: Fail to resize input image\n");
-        return -1;
+        return;
     }
 
     double hScale = (double)sc / dimension;
@@ -25,7 +23,8 @@ int resample(int sr, int sc, int *src, int dest[]) {
         int j = 0;
         double currentHScale = hScale;
         int destj = 0;
-        while (j < sc && destj < dimension) { 
+        while (j < sc && destj < dimension) {
+
             int hStride = (int)floor(currentHScale);
             if (destj == dimension - 1) {
                 hStride = sc - j;
@@ -48,8 +47,4 @@ int resample(int sr, int sc, int *src, int dest[]) {
         currentVScale -= (double)vStride;
         currentVScale += vScale;
     }
-
-    // success
-    printf("Done resizing input image\n");
-    return 0;
 }

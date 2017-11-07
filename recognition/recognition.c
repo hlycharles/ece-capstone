@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 #include "util/matrix.h"
 #include "util/io.h"
 #include "data/avg.h"
@@ -41,13 +39,13 @@ void calcWeightVectorElem(double *evec, int *normalized, double *dist) {
     matrix_mult_double_rev(evec, imgLen, normalized, imgLen, dist);
 }
 
-int findFaceIndex(double *wvec, double wvecs[][imgSetSize]) {
+int findFaceIndex(double *wvec, double wvecs[][imgSetSize], int dists[]) {
     int index = -1;
     int minDist = -1;
     for (int i = 0; i < imgSetSize; i++) {
         double *currVec = wvecs[i];
         int dist = vec_dist(wvec, currVec, imgSetSize);
-        printf("dist: %d\n", dist);
+        dists[i] = dist;
         if (minDist < 0 || dist < minDist) {
             minDist = dist;
             index = i;
@@ -57,7 +55,7 @@ int findFaceIndex(double *wvec, double wvecs[][imgSetSize]) {
 }
 
 // return index of person recognized, -1 if not a person
-int processImage(int inputImg[]) {
+int processImage(int inputImg[], int dists[]) {
     // calculate normalized image
     int normalized[imgLen];
     int i, j;
@@ -75,7 +73,7 @@ int processImage(int inputImg[]) {
     }
 
     // find the face index
-    int faceIndex = findFaceIndex(wvec, wvecs);
+    int faceIndex = findFaceIndex(wvec, wvecs, dists);
 
     return faceIndex;
 }
