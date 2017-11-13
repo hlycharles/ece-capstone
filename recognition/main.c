@@ -33,6 +33,8 @@ void recognition(int a, int *result) {
 	}
 
 	inputImg[pixelIndex] = a;
+	// TODO: actually resize input
+	resizedInput[pixelIndex] = a;
 	pixelIndex++;
 
 	if (pixelIndex == 400) {
