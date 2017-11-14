@@ -9,32 +9,6 @@ const int imgSetSize = 6;
 // imgSize * imgSize
 const int imgLen = 400;
 
-static int avgImg[imgLen];
-static double evecs[imgSetSize][imgLen];
-static double wvecs[imgSetSize][imgSetSize];
-
-void readAvgImage() {
-    for (int i = 0; i < imgLen; i++) {
-        avgImg[i] = avgImgVal[i];
-    }
-}
-
-void readEVecs() {
-    for (int i = 0; i < imgSetSize; i++) {
-        for (int j = 0; j < imgLen; j++) {
-            evecs[i][j] = evecsVal[i * imgLen + j];
-        }
-    }
-}
-
-void readWVecs() {
-    for (int i = 0; i < imgSetSize; i++) {
-        for (int j = 0; j < imgSetSize; j++) {
-            wvecs[i][j] = wvecsVal[i * imgSetSize + j];
-        }
-    }
-}
-
 void calcWeightVectorElem(double *evec, int *normalized, double *dist) {
     matrix_mult_double_rev(evec, imgLen, normalized, imgLen, dist);
 }
@@ -76,10 +50,4 @@ int processImage(int inputImg[], int dists[]) {
     int faceIndex = findFaceIndex(wvec, wvecs, dists);
 
     return faceIndex;
-}
-
-void initData() {
-    readAvgImage();
-    readEVecs();
-    readWVecs();
 }

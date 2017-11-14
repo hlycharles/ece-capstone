@@ -2,12 +2,6 @@
 #include "./recognition.h"
 #include "../resample/resample.h"
 
-void readInputImage(int inputImg[]) {
-    for (int i = 0; i < imgLen; i++) {
-        inputImg[i] = inputImgVal[i];
-    }
-}
-
 void recognition(int a, int *result) {
 #pragma HLS INTERFACE s_axilite port=return bundle=HLS_MACC_PERIPH_BUS
 #pragma HLS INTERFACE s_axilite port=a bundle=HLS_MACC_PERIPH_BUS
@@ -31,7 +25,6 @@ void recognition(int a, int *result) {
 
 	if (a == 400) {
 		pixelIndex = 0;
-		initData();
 		// readInputImage(inputImg);
 
 		int faceIndex = processImage(inputImg, dists);
