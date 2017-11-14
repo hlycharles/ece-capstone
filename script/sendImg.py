@@ -3,11 +3,14 @@ import serial
 from PIL import Image
 
 def processImg(filepath):
-    ser = serial.Serial('/dev/ttyACM0', 115200, timeout = 1)
+    ser = serial.Serial('/dev/tty.usbmodem1421', 115200, timeout = 2)
     print(ser.name)
     
     img = Image.open(filepath)
     width, height = img.size
+    sentNum = 0
+    dataIn = ""
+
     for y in range(height):
         for x in range(width):
             pixel = img.getpixel((x, y))
@@ -18,14 +21,22 @@ def processImg(filepath):
                 pixelStr = str(grayPixel % 10) + pixelStr
                 grayPixel /= 10
             pixelStr = str(grayPixel) + pixelStr
+            dataIn += pixelStr
             for i in range(len(pixelStr)):
                 ser.write(pixelStr[i])
                 ser.flush()
             ser.write('*')
+            sentNum += 1
             ser.flush()
+            dataIn += "*"
 
-    s = ser.read(1)
-    print s
+    print "sent:", sentNum
+    result = ""
+    s = ser.read()
+    while (s):
+        result += s
+        s = ser.read()
+    print result
     ser.close() 
     
 
