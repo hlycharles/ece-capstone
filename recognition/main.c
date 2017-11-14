@@ -29,10 +29,7 @@ void recognition(int a, int *result) {
 		return;
 	}
 
-	inputImg[pixelIndex] = a;
-	pixelIndex += 1;
-
-	if (pixelIndex >= 400) {
+	if (a == 400) {
 		pixelIndex = 0;
 		initData();
 		// readInputImage(inputImg);
@@ -42,10 +39,10 @@ void recognition(int a, int *result) {
 		return;
 	}
 
-	if (pixelIndex < 400) {
-		*result = 4200 + pixelIndex;
-		return;
-	}
+	inputImg[pixelIndex] = a;
+	pixelIndex += 1;
+
+	*result = 4200 + pixelIndex;
 
 
 	/*
