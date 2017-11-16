@@ -12,15 +12,19 @@ void outputFaceIndex(int faceIndex) {
     printf("face: %d\n", faceIndex);
 }
 
-int main() {
+int recognition(int inImg[], int r, int c) {
 
     // resize image
     int resizedInput[imgLen];
-    resample(imgSize, imgSize, &(inputImg[0]), resizedInput);
+    resample(r, c, &(inImg[0]), resizedInput);
 
     int faceIndex = processImage(resizedInput);
 
     outputFaceIndex(faceIndex);
 
     return faceIndex;
+}
+
+int main() {
+    recognition(inputImg, 20, 20);
 }
