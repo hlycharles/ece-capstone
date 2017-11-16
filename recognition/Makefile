@@ -1,7 +1,7 @@
 
-CC=gcc
+CC=g++
 
 all: main
 
-main: util/io.c util/matrix.c data/input.c data/avg.c data/evec.c data/eval.c recognition.c ../resample/resample.c main.c
-	$(CC) util/io.c util/matrix.c data/input.c data/avg.c data/evec.c data/eval.c recognition.c ../resample/resample.c main.c -o build/main -lm
+main: util/matrix.cpp data/input.cpp data/avg.cpp data/evec.cpp data/eval.cpp recognition.cpp ../resample/resample.cpp main.cpp
+	$(CC) util/matrix.cpp data/input.cpp data/avg.cpp data/evec.cpp data/eval.cpp recognition.cpp ../resample/resample.cpp main.cpp -o build/main -lm

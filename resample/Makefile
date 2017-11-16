@@ -1,7 +1,7 @@
 
-CC=gcc
+CC=g++
 
 all: resample
 
-resample: resample.c main.c
-	$(CC) resample.c main.c -o build/main -lm
+resample: resample.cpp main.cpp
+	$(CC) resample.cpp main.cpp -o build/main -lm

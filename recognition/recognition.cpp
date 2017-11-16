@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 #include "util/matrix.h"
-#include "util/io.h"
 #include "data/avg.h"
 #include "data/evec.h"
 #include "data/eval.h"
