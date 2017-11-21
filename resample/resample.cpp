@@ -3,7 +3,7 @@
 
 const int dimension = 20;
 
-void resample(int sr, int sc, int *src, int dest[]) {
+void resample(int sr, int sc, int src[], int dest[]) {
     // currently ignore images whose one dimension is less than 20
     if (sr < dimension || sc < dimension) {
         return;
