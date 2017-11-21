@@ -8,6 +8,7 @@ void recognition(int a, int *result) {
 #pragma HLS INTERFACE s_axilite port=result bundle=HLS_MACC_PERIPH_BUS
 
 	static int inputImg[400];
+	static int resizedImg[400];
 	static int pixelIndex = 0;
 
 	static int dists[6];
@@ -25,9 +26,10 @@ void recognition(int a, int *result) {
 
 	if (a == 400) {
 		pixelIndex = 0;
-		// readInputImage(inputImg);
 
-		int faceIndex = processImage(inputImg, dists);
+		resample(imgSize, imgSize, &(inputImg[0]), resizedImg);
+
+		int faceIndex = processImage(resizedImg, dists);
 		*result = faceIndex;
 		return;
 	}
@@ -36,47 +38,4 @@ void recognition(int a, int *result) {
 	pixelIndex += 1;
 
 	*result = 4200 + pixelIndex;
-
-
-	/*
-	static int dists[6];
-	static int currentDist = 0;
-
-	static int inputImg[400];
-	static int resizedInput[400];
-
-	static int pixelIndex = 0;
-
-	if (a == 300) {
-		int dist = dists[currentDist];
-		currentDist += 1;
-		if (currentDist >= 6) {
-			currentDist = 0;
-		}
-		*result = dist;
-		return;
-	}
-
-	inputImg[pixelIndex] = a;
-	// TODO: actually resize input
-	resizedInput[pixelIndex] = a;
-	pixelIndex++;
-
-	if (pixelIndex == 400) {
-		pixelIndex = 0;
-
-		initData();
-
-		// get input data
-		// readInputImage(inputImg);
-
-		// resize image
-		// TODO: specify latency
-		// resample(imgSize, imgSize, &(inputImg[0]), resizedInput);
-
-		int faceIndex = processImage(resizedInput, dists);
-		*result = faceIndex;
-	} else {
-		*result = -1;
-	} */
 }
