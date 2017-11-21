@@ -11,7 +11,7 @@ baseline/recognition/training
 
 # image and training data
 baseline/recognition/data
-recognition/data
+# recognition/data
 resample/data
 
 # backup files
