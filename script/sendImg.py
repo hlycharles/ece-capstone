@@ -1,10 +1,11 @@
 import sys
 import serial
+import time
 from PIL import Image
 
 def processImg(filepath):
-    ser = serial.Serial('/dev/tty.usbmodem1421', 115200, timeout = 2)
-    print(ser.name)
+    ser = serial.Serial('/dev/tty.usbmodem1421', 115200, timeout = 1)
+    # print(ser.name)
     
     img = Image.open(filepath)
     width, height = img.size
@@ -22,21 +23,29 @@ def processImg(filepath):
                 grayPixel /= 10
             pixelStr = str(grayPixel) + pixelStr
             dataIn += pixelStr
-            for i in range(len(pixelStr)):
-                ser.write(pixelStr[i])
-                ser.flush()
-            ser.write('*')
             sentNum += 1
-            ser.flush()
             dataIn += "*"
 
-    print "sent:", sentNum
-    result = ""
-    s = ser.read()
-    while (s):
-        result += s
+    totalTime = 0
+    for i in range(100):
+        ser.write("!")
+        ser.flush()
+        start = time.time()
+        result = ""
         s = ser.read()
-    print result
+        while (s):
+            result += s
+            if (s == '&'):
+                # print "complete: " + str(i)
+                break
+            s = ser.read()
+        end = time.time()
+        totalTime += (end - start)
+        # print result
+    
+    print "Complete"
+    print "Time: " + str(totalTime)
+
     ser.close() 
     
 
