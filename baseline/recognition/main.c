@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 
 #include "util/matrix.h"
 #include "util/io.h"
@@ -88,8 +89,15 @@ int main() {
     readEVecs();
     readWVecs();
 
-    int faceIndex = processImage();
-    outputFaceIndex(faceIndex);
+    int faceIndex;
+    clock_t start = clock();
+    for (int i = 0; i < 100; i++) {
+        faceIndex = processImage();
+        // outputFaceIndex(faceIndex);
+    }
+    clock_t diff = clock() - start;
+    double msec = diff * 1000.0 / CLOCKS_PER_SEC;
+    printf("Time: %fms\n", msec);
 
     return 0;
 }
