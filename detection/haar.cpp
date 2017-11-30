@@ -1,5 +1,6 @@
 #include "haar.h"
 #include "sqrt.h"
+#include "ap_int.h"
 
 #define TOTAL_NODES 2913
 #define TOTAL_STAGES 25
@@ -42,7 +43,7 @@ int cascadeClassifier  ( int SUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
                        ); 
 
 int weakClassifier      ( int stddev,
-                          int coord[12],
+                          ap_uint<25> coord[12],
                           int haar_counter,
                           int w_id                      
                         );
@@ -241,7 +242,7 @@ int cascadeClassifier
 
   #include "haar_dataRcc_with_partitioning.h"
 
-  static int coord[12];
+  static ap_uint<25> coord[12];
   #pragma HLS array_partition variable=coord complete dim=0
 
 
@@ -351,7 +352,7 @@ int cascadeClassifier
 int weakClassifier
 (
   int stddev,
-  int coord[12],  
+  ap_uint<25> coord[12],  
   int haar_counter,
   int w_id 
 )
