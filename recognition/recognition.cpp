@@ -16,9 +16,14 @@ int findFaceIndex(double *wvec, double wvecs[][imgSetSize], int dists[]) {
     int index = -1;
     int minDist = -1;
     for (int i = 0; i < imgSetSize; i++) {
+#pragma HLS UNROLL
         double *currVec = wvecs[i];
         int dist = vec_dist(wvec, currVec, imgSetSize);
         dists[i] = dist;
+    }
+
+    for (int i = 0; i < imgSetSize; i++) {
+    	int dist = dists[i];
         if (minDist < 0 || dist < minDist) {
             minDist = dist;
             index = i;
