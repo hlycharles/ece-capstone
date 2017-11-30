@@ -3,19 +3,9 @@
 #include <stdlib.h>
 #include "./haar.h"
 #include "image.h"
-// #include "data/input.h"
-// #include "./recognition.h"
-// #include "./resample/resample.h"
-
-const int imgSize = 20;
-const int imgLen = 400;
+#include "../recognition/recognitionModule.h"
 
 using namespace std;
-
-// output face index
-void outputFaceIndex(int faceIndex) {
-	printf("face: %d\n", faceIndex);
-}
 
 int main() {
 	int flag;
@@ -82,32 +72,15 @@ int main() {
     fclose(fp);
 	printf("-- DONE starting saving result --\n");
 
-	// printf("\n-- saving output image [Start] --\r\n"); 
-
-	// Draw the rectangles onto the images and save the outputs.
-	/*
-	for(i = 0; i < *result_size ; i++ )
-	{
-	MyRect r = result[i];
-	drawRectangle(Data, r);
-	}
-
-	flag = writePgm((char *)(OUTPUT_FILENAME),Data); 
-	printf("\n-- saving output image [Done] --\r\n");
-	printf("DURATION: %2f", duration);
-	*/
-
-	/*
-
-	// resize image
-	int resizedInput[imgLen];
-	resample(imgSize, imgSize, &(inputImg[0]), resizedInput);
-
-	int faceIndex = processImage(resizedInput);
-
-	outputFaceIndex(faceIndex);
-
-	return faceIndex; */
+	// convert to 1D image
+	int inImg[r.width * r.height];
+	for (int i = 0; i < r.height; i++) {
+		for (int j = 0; j < r.width; j++) {
+			inImg[i * r.width + j] = Data[r.y + i][r.x + j];
+		}
+    }
+	
+	recognition(inImg, r.height, r.width);
 
 	return 0;
 }
