@@ -2,6 +2,7 @@
 baseline/recognition/build
 recognition/build
 resample/build
+detection/build
 
 # sample input images
 baseline/recognition/input
