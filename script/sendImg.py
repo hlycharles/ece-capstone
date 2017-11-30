@@ -4,7 +4,7 @@ import time
 from PIL import Image
 
 def processImg(filepath):
-    ser = serial.Serial('/dev/tty.usbmodem1421', 115200, timeout = 1)
+    ser = serial.Serial('/dev/tty.usbmodem1421', 115200, timeout = 2)
     # print(ser.name)
     
     img = Image.open(filepath)
@@ -17,18 +17,14 @@ def processImg(filepath):
             pixel = img.getpixel((x, y))
             grayPixel = (pixel[0] + pixel[1] + pixel[2]) / 3
             # write pixel
-            pixelStr = ""
-            while (grayPixel >= 10):
-                pixelStr = str(grayPixel % 10) + pixelStr
-                grayPixel /= 10
-            pixelStr = str(grayPixel) + pixelStr
+            pixelStr = chr(grayPixel)
             dataIn += pixelStr
             sentNum += 1
-            dataIn += "*"
 
     totalTime = 0
-    for i in range(100):
-        ser.write("!")
+    print "sendNum:", sentNum
+    for i in range(1):
+        ser.write(dataIn)
         ser.flush()
         start = time.time()
         result = ""
