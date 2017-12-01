@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <ctime>
 #include <stdlib.h>
 #include "./haar.h"
 #include "image.h"
@@ -7,17 +6,23 @@
 
 using namespace std;
 
-int main() {
+void nami(int rd[10], int ot[60]) {
+#pragma HLS INTERFACE axis port=rd
+#pragma HLS INTERFACE axis port=ot
+
 	int flag;
 	int in_flag , in_width , in_height , in_maxgrey;
 		 
 	printf ("-- entering main function --\r\n");
 	printf ("-- loading image --\r\n");
-		 
+
+	static int inHolder[10];
+	for (int i = 0; i < 10; i++) {
+		inHolder[i] = rd[i];
+	}
+
 	// 320 X 240 Input image in hex format 
 	#include INPUT_IMAGE
-
-	double duration;
 
 	// Arguments to be passed to DUT  
 	MyRect result[RESULT_SIZE];
@@ -36,9 +41,9 @@ int main() {
 
 	printf ("-- detecting faces --\r\n");
 
-	std::clock_t start = std::clock();
+	// std::clock_t start = std::clock();
 	detectFaces ( Data[IMAGE_HEIGHT-1], result_x, result_y, result_w, result_h, result_size);
-	duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+	// duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
 
 	printf("\nresult_size = %d", *result_size);
 
@@ -55,9 +60,17 @@ int main() {
 	// save detection results
 	if (*result_size == 0) {
 		printf("No face detected\n");
-		return 0;
+		for (int k = 0; k < 60; k++) {
+			ot[k] = 20;
+		}
+ 		return;
 	}
 
+	MyRect r = result[0];
+
+
+
+	/*
 	printf("\n-- starting saving result --\n");
 	MyRect r = result[0];
     FILE *fp;
@@ -71,16 +84,19 @@ int main() {
     }
     fclose(fp);
 	printf("-- DONE starting saving result --\n");
+	*/
 
 	// convert to 1D image
-	int inImg[r.width * r.height];
+	/*
+	static int inImg[19200];
 	for (int i = 0; i < r.height; i++) {
 		for (int j = 0; j < r.width; j++) {
 			inImg[i * r.width + j] = Data[r.y + i][r.x + j];
 		}
     }
 	
-	recognition(inImg, r.height, r.width);
-
-	return 0;
+	int faceIndex = recognition(inImg, r.height, r.width); */
+	for (int k = 0; k < 60; k++) {
+		ot[k] = (k < 30) ? r.x : r.y;
+	}
 }
