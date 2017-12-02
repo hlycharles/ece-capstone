@@ -30,17 +30,24 @@ int main() {
 
 	int res_size=0;
 	int *result_size = &res_size;
-	int i;
 
-	for ( i = 0; i < IMAGE_HEIGHT-1; i+=1 ){
-	  detectFaces ( Data[i], result_x, result_y, result_w, result_h, result_size);
+	// convert to 1D image
+	unsigned char data[19200];
+	for (int i = 0; i < 120; i++) {
+		for (int j = 0; j < 160; j++) {
+			data[i * 160 + j] = Data[i][j];
+		}
 	}
 
 	printf ("-- detecting faces --\r\n");
 
-	std::clock_t start = std::clock();
-	detectFaces ( Data[IMAGE_HEIGHT-1], result_x, result_y, result_w, result_h, result_size);
-	duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+	for (int i = 0; i < IMAGE_HEIGHT; i+=1 ){
+		static unsigned char row[160];
+		for (int j = 0; j < 160; j++) {
+			row[j] = data[i * 160 + j];
+		}
+		detectFaces (row, result_x, result_y, result_w, result_h, result_size);
+	}
 
 	printf("\nresult_size = %d", *result_size);
 
