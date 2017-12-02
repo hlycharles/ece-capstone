@@ -12,7 +12,7 @@ int in_width = 160;
 int in_height = 120;
 int in_maxgrey = 255;
 
-void nami(int rd[10], int ot[60]) {
+void nami(int rd[19200], int ot[60]) {
 #pragma HLS INTERFACE axis port=rd
 #pragma HLS INTERFACE axis port=ot
 
@@ -35,17 +35,16 @@ void nami(int rd[10], int ot[60]) {
 
 	int res_size=0;
 	int *result_size = &res_size;
-	int i;
-
-	for ( i = 0; i < IMAGE_HEIGHT-1; i+=1 ){
-	  detectFaces ( Data[i], result_x, result_y, result_w, result_h, result_size);
-	}
 
 	printf ("-- detecting faces --\r\n");
 
-	// std::clock_t start = std::clock();
-	detectFaces ( Data[IMAGE_HEIGHT-1], result_x, result_y, result_w, result_h, result_size);
-	// duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+	for (int i = 0; i < IMAGE_HEIGHT; i+=1 ){
+		static unsigned char row[160];
+		for (int j = 0; j < 160; j++) {
+			row[j] = rd[i * 160 + j];
+		}
+		detectFaces (row, result_x, result_y, result_w, result_h, result_size);
+	}
 
 	printf("\nresult_size = %d", *result_size);
 
@@ -75,7 +74,7 @@ void nami(int rd[10], int ot[60]) {
 	static int dists[6];
 	for (i = 0; i < r.height; i++) {
 		for (int j = 0; j < r.width; j++) {
-			inImg[i * r.width + j] = Data[r.y + i][r.x + j];
+			inImg[i * r.width + j] = rd[(r.y + i) * 160 + (r.x + j)];
 		}
     }
 	
