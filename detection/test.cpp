@@ -7,12 +7,12 @@
 
 using namespace std;
 
-int in_flag = 1;
+int in_flag =1;
 int in_width = 160;
 int in_height = 120;
 int in_maxgrey = 255;
 
-void nami(int rd[10], int ot[60]) {
+int main() {
 #pragma HLS INTERFACE axis port=rd
 #pragma HLS INTERFACE axis port=ot
 
@@ -21,10 +21,6 @@ void nami(int rd[10], int ot[60]) {
 	printf ("-- entering main function --\r\n");
 	printf ("-- loading image --\r\n");
 
-	static int inHolder[10];
-	for (int i = 0; i < 10; i++) {
-		inHolder[i] = rd[i];
-	}
 
 	// Arguments to be passed to DUT  
 	MyRect result[RESULT_SIZE];
@@ -57,15 +53,11 @@ void nami(int rd[10], int ot[60]) {
 	}
 
 	for( int i=0 ; i < *result_size ; i++ )
-	printf("\n [Test Bench (main) ] detected rects: %d %d %d %d",result[i].x,result[i].y,result[i].width,result[i].height);
+	printf("\n [Test Bench (main) ] detected rects: %d %d %d %d\n",result[i].x,result[i].y,result[i].width,result[i].height);
 
 	// save detection results
 	if (*result_size == 0) {
-		printf("No face detected\n");
-		for (int k = 0; k < 60; k++) {
-			ot[k] = 20;
-		}
- 		return;
+ 		return -1;
 	}
 
 	MyRect r = result[0];
@@ -80,15 +72,11 @@ void nami(int rd[10], int ot[60]) {
     }
 	
 	int faceIndex = recognition(inImg, r.height, r.width, dists);
-	for (int k = 0; k < 60; k++) {
-		if (k < 15) {
-			ot[k] = faceIndex;
-		} else if (k <= 26) {
-			ot[k] = dists[(k - 15) % 6];
-		} else if (k < 45) {
-			ot[k] = r.x;
-		} else {
-			ot[k] = r.y;
-		}
+	for (i = 0; i < 6; i++) {
+		printf("dist: %d\n", dists[i]);
 	}
+
+	printf("face index: %d\n", faceIndex);
+
+	return 0;
 }

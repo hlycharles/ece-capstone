@@ -33,7 +33,7 @@ int findFaceIndex(double *wvec, double wvecs[][imgSetSize], int dists[]) {
 }
 
 // return index of person recognized, -1 if not a person
-int processImage(int inputImg[], int dists[]) {
+int recognizeImage(int inputImg[], int dists[]) {
     // calculate normalized image
     int normalized[imgLen];
     int i, j;
