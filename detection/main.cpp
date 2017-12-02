@@ -1,17 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "./haar.h"
-#include "image.h"
+#include "./image.h"
 #include "../recognition/recognitionModule.h"
+#include "./120p.h"
 
 using namespace std;
+
+int in_flag =1;
+int in_width = 160;
+int in_height = 120;
+int in_maxgrey = 255;
 
 void nami(int rd[10], int ot[60]) {
 #pragma HLS INTERFACE axis port=rd
 #pragma HLS INTERFACE axis port=ot
 
 	int flag;
-	int in_flag , in_width , in_height , in_maxgrey;
 		 
 	printf ("-- entering main function --\r\n");
 	printf ("-- loading image --\r\n");
@@ -20,9 +25,6 @@ void nami(int rd[10], int ot[60]) {
 	for (int i = 0; i < 10; i++) {
 		inHolder[i] = rd[i];
 	}
-
-	// 320 X 240 Input image in hex format 
-	#include INPUT_IMAGE
 
 	// Arguments to be passed to DUT  
 	MyRect result[RESULT_SIZE];

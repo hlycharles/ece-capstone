@@ -39,9 +39,6 @@ typedef ap_uint<5> uint5_t;
 #define PYRAMID_HEIGHT 12
 
 #define OUTPUT_FILENAME "Output.pgm"
-//#define INPUT_IMAGE "image0_320_240.h"
-#define INPUT_IMAGE "120p.h"
-
 
 #endif
 
@@ -85,6 +82,50 @@ typedef struct
         int flag;
 }
 MyInputImage;
+
+void integralImages( int height, int width, unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH], ap_uint<24> Sum[IMAGE_HEIGHT][IMAGE_WIDTH]);
+
+void imageScaler        ( int src_height,
+			  int src_width,
+                          unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH],
+                          int dest_height,
+			  int dest_width,
+                          unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH] 
+                        );
+
+void processImage       ( float factor,
+                          int sum_row,
+                          int sum_col,
+                          int *AllCandidates_x,
+                          int *AllCandidates_y,
+                          int *AllCandidates_w,
+                          int *AllCandidates_h,
+                          int *AllCandidates_size,
+                          unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
+                          MySize winSize
+                        );
+
+
+int cascadeClassifier  ( ap_uint<24> SUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
+                         MyPoint pt
+                       ); 
+
+int weakClassifier      ( int stddev,
+                          ap_uint<25> coord[12],
+                          int haar_counter,
+                          int w_id                      
+                        );
+
+void groupRectangles    ( MyRect *rectList, 
+                          int *rectList_size, 
+                          int groupThreshold, 
+                          float eps
+                        );
+
+unsigned int int_sqrt   ( unsigned int  value
+                        );
+
+int  myRound ( float value );
 
 void detectFaces( unsigned char Data[IMAGE_WIDTH], 
                   int _result_x[RESULT_SIZE], 

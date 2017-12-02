@@ -1,6 +1,8 @@
 #include "haar.h"
 #include "sqrt.h"
 #include "ap_int.h"
+#include "haar_ewc.h"
+#include "haar_rcc.h"
 
 #define TOTAL_NODES 2913
 #define TOTAL_STAGES 25
@@ -11,52 +13,7 @@
 #define SQ_SIZE 2
 #define PYRAMID_HEIGHT 12
 
-/****************************************************************************************/
-/* DECLARATION OF FUNCTIONS 
-****************************************************************************************/
-void integralImages( int height, int width, unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH], ap_uint<24> Sum[IMAGE_HEIGHT][IMAGE_WIDTH]);
-
-void imageScaler        ( int src_height,
-			  int src_width,
-                          unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH],
-                          int dest_height,
-			  int dest_width,
-                          unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH] 
-                        );
-
-void processImage       ( float factor,
-                          int sum_row,
-                          int sum_col,
-                          int *AllCandidates_x,
-                          int *AllCandidates_y,
-                          int *AllCandidates_w,
-                          int *AllCandidates_h,
-                          int *AllCandidates_size,
-                          unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
-                          MySize winSize
-                        );
-
-
-int cascadeClassifier  ( ap_uint<24> SUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
-                         MyPoint pt
-                       ); 
-
-int weakClassifier      ( int stddev,
-                          ap_uint<25> coord[12],
-                          int haar_counter,
-                          int w_id                      
-                        );
-
-void groupRectangles    ( MyRect *rectList, 
-                          int *rectList_size, 
-                          int groupThreshold, 
-                          float eps
-                        );
-
-unsigned int int_sqrt   ( unsigned int  value
-                        );
-
-inline  int  myRound ( float value )
+int  myRound ( float value )
 {
   return (int)(value + (value >= 0 ? 0.5 : -0.5));
 }
@@ -237,7 +194,6 @@ int cascadeClassifier
   int r_index = 0;
   int stage_sum=0;
 
-  #include "haar_dataRcc_with_partitioning.h"
 
   static ap_uint<25> coord[12];
   #pragma HLS array_partition variable=coord complete dim=0
@@ -354,7 +310,6 @@ int weakClassifier
   int w_id 
 )
 {                                                                                             
-  #include "haar_dataEWC_with_partitioning.h"
   #pragma HLS INLINE
   int t = tree_thresh_array[haar_counter] * stddev; 
   
