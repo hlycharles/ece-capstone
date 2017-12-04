@@ -33,15 +33,11 @@ int main() {
 	int *result_size = &res_size;
 	int i;
 
-	for ( i = 0; i < IMAGE_HEIGHT-1; i+=1 ){
-	  detectFaces ( Data[i], result_x, result_y, result_w, result_h, result_size);
-	}
-
 	printf ("-- detecting faces --\r\n");
 
-	// std::clock_t start = std::clock();
-	detectFaces ( Data[IMAGE_HEIGHT-1], result_x, result_y, result_w, result_h, result_size);
-	// duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+	for ( i = 0; i < IMAGE_HEIGHT; i+=1 ){
+	  detectFaces ( Data[i], result_x, result_y, result_w, result_h, result_size);
+	}
 
 	printf("\nresult_size = %d", *result_size);
 
