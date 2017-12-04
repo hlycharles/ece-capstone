@@ -1,7 +1,7 @@
 #include "haar.h"
 #include "sqrt.h"
-#include "haar_ewc.h"
 #include "haar_rcc.h"
+#include "haar_ewc.h"
 
 #define TOTAL_NODES 2913
 #define TOTAL_STAGES 25
@@ -149,9 +149,9 @@ void processImage
   int u,v;
   int x,y,i,j,k;
 
-  int SUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH], SQSUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH];
+  int SUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH];
 
-  integralImages( sum_row, sum_col ,IMG1_data, SUM1_data, SQSUM1_data );
+  integralImages( sum_row, sum_col ,IMG1_data, SUM1_data);
 
   Pixely: for( y = 0; y < sum_row - WINDOW_SIZE + 1; y++ ){
     Pixelx: for ( x = 0; x < sum_col - WINDOW_SIZE + 1; x++ ){
@@ -160,7 +160,6 @@ void processImage
       p.y = y;
       
       result = cascadeClassifier ( SUM1_data,
-    			           SQSUM1_data,
     		                   p
                                  );
 
@@ -179,7 +178,6 @@ void processImage
 int cascadeClassifier 
 
 ( int SUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
-  int SQSUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
   MyPoint pt
 ) 
 
@@ -205,10 +203,10 @@ int cascadeClassifier
   equRect.width = WINDOW_SIZE;
   equRect.height = WINDOW_SIZE;
 
-  stddev =                    SQSUM1_data[pt.y][pt.x]   
-                           -  SQSUM1_data[pt.y][pt.x+WINDOW_SIZE-1]
-                           -  SQSUM1_data[pt.y+WINDOW_SIZE-1][pt.x] 
-                           +  SQSUM1_data[pt.y+WINDOW_SIZE-1][pt.x+WINDOW_SIZE-1];
+  stddev =                    SUM1_data[pt.y][pt.x] * SUM1_data[pt.y][pt.x]   
+                           -  SUM1_data[pt.y][pt.x+WINDOW_SIZE-1] * SUM1_data[pt.y][pt.x+WINDOW_SIZE-1]
+                           -  SUM1_data[pt.y+WINDOW_SIZE-1][pt.x] * SUM1_data[pt.y+WINDOW_SIZE-1][pt.x] 
+                           +  SUM1_data[pt.y+WINDOW_SIZE-1][pt.x+WINDOW_SIZE-1] * SUM1_data[pt.y+WINDOW_SIZE-1][pt.x+WINDOW_SIZE-1];
 
   mean =                      SUM1_data[pt.y][pt.x]   
                            -  SUM1_data[pt.y][pt.x+WINDOW_SIZE-1]
@@ -337,32 +335,27 @@ int weakClassifier
 
 }
 
-void integralImages( int height, int width, unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH], int Sum[IMAGE_HEIGHT][IMAGE_WIDTH], int Sqsum[IMAGE_HEIGHT][IMAGE_WIDTH])
+void integralImages( int height, int width, unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH], int Sum[IMAGE_HEIGHT][IMAGE_WIDTH])
 {
-  int x, y, s, sq, t, tq;
+  int x, y, s, t;
   unsigned char it;
 
   for( y = 0; y < height; y++)
     {
       s = 0;
-      sq = 0;
       /* loop over the number of columns */
       for( x = 0; x < width; x ++)
 	{
 	  it = Data[y][x];
 	  /* sum of the current row (integer)*/
 	  s += it; 
-	  sq += it*it;
 
 	  t = s;
-	  tq = sq;
 	  if (y != 0)
 	    {
 	      t += Sum[(y-1)][x];
-	      tq += Sqsum[(y-1)][x];
 	    }
 	  Sum[y][x]=t;
-	  Sqsum[y][x]=tq;
 	}
     }
 }

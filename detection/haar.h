@@ -97,7 +97,7 @@ typedef struct
 }
 MyInputImage;
 
-void integralImages( int height, int width, unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH], int Sum[IMAGE_HEIGHT][IMAGE_WIDTH], int Sqsum[IMAGE_HEIGHT][IMAGE_WIDTH]);
+void integralImages( int height, int width, unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH], int Sum[IMAGE_HEIGHT][IMAGE_WIDTH]);
 
 void imageScaler        ( int src_height,
 			  int src_width,
@@ -121,7 +121,6 @@ void processImage       ( float factor,
 
 
 int cascadeClassifier  ( int SUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
-                         int SQSUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
                          MyPoint pt
                        ); 
 
