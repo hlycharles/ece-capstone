@@ -1,8 +1,8 @@
 #include "haar.h"
 #include "sqrt.h"
 #include "ap_int.h"
-#include "haar_ewc.h"
 #include "haar_rcc.h"
+#include "haar_ewc.h"
 
 #define TOTAL_NODES 2913
 #define TOTAL_STAGES 25
@@ -150,9 +150,9 @@ void processImage
   int u,v;
   int x,y,i,j,k;
 
-  ap_uint<24> SUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH];
+  int SUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH];
 
-  integralImages( sum_row, sum_col ,IMG1_data, SUM1_data );
+  integralImages( sum_row, sum_col ,IMG1_data, SUM1_data);
 
   Pixely: for( y = 0; y < sum_row - WINDOW_SIZE + 1; y++ ){
     Pixelx: for ( x = 0; x < sum_col - WINDOW_SIZE + 1; x++ ){
@@ -178,7 +178,7 @@ void processImage
 
 int cascadeClassifier 
 
-( ap_uint<24> SUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
+( int SUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
   MyPoint pt
 ) 
 
@@ -205,9 +205,9 @@ int cascadeClassifier
   equRect.width = WINDOW_SIZE;
   equRect.height = WINDOW_SIZE;
 
-  stddev =                    SUM1_data[pt.y][pt.x] * SUM1_data[pt.y][pt.x]
+  stddev =                    SUM1_data[pt.y][pt.x] * SUM1_data[pt.y][pt.x]   
                            -  SUM1_data[pt.y][pt.x+WINDOW_SIZE-1] * SUM1_data[pt.y][pt.x+WINDOW_SIZE-1]
-                           -  SUM1_data[pt.y+WINDOW_SIZE-1][pt.x] *  SUM1_data[pt.y+WINDOW_SIZE-1][pt.x]
+                           -  SUM1_data[pt.y+WINDOW_SIZE-1][pt.x] * SUM1_data[pt.y+WINDOW_SIZE-1][pt.x] 
                            +  SUM1_data[pt.y+WINDOW_SIZE-1][pt.x+WINDOW_SIZE-1] * SUM1_data[pt.y+WINDOW_SIZE-1][pt.x+WINDOW_SIZE-1];
 
   mean =                      SUM1_data[pt.y][pt.x]   
@@ -337,7 +337,7 @@ int weakClassifier
 
 }
 
-void integralImages( int height, int width, unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH], ap_uint<24> Sum[IMAGE_HEIGHT][IMAGE_WIDTH])
+void integralImages( int height, int width, unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH], int Sum[IMAGE_HEIGHT][IMAGE_WIDTH])
 {
   int x, y, s, t;
   unsigned char it;
