@@ -69,11 +69,6 @@ void nami(int rd[IN_WIDTH], int ot[20]) {
     }
 	
 	int faceIndex = recognition(inImg, r.height, r.width, dists);
-	ot[0] = faceIndex;
-	ot[1] = r.x;
-	ot[2] = r.y;
-	ot[3] = r.width;
-	ot[4] = r.height;
 	for (int k = 0; k < 20; k++) {
 		if (k == 0) {
 			ot[k] = faceIndex;
