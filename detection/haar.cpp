@@ -25,7 +25,7 @@ int  myRound ( float value )
 void detectFaces
 
 ( 
-  unsigned char inData[IMAGE_WIDTH],  // input port
+  unsigned char inData[IMAGE_HEIGHT][IMAGE_WIDTH],  // input port
   int result_x[RESULT_SIZE],          // Output ports
   int result_y[RESULT_SIZE],
   int result_w[RESULT_SIZE],
@@ -34,7 +34,14 @@ void detectFaces
 )
 
 {
-   static unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH];
+/*
+   unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH];
+   // ADDED
+   for (int i = 0; i < IMAGE_HEIGHT; i++) {
+	   for (int j = 0; j < IMAGE_WIDTH; j++) {
+		   Data[i][j] = inData[i][j];
+	   }
+   } */
    int i, j;
 
    int result_x_Scale[RESULT_SIZE];
@@ -48,7 +55,7 @@ void detectFaces
   * first 239 calls just load the BRAMs with the image and last 240th call does the actual face detection
   * This is a hacky way because SDSoC does not allow to send 320X240 image at once. In future sdsalloc can be 
   * used allocate the memory directly into the FPGA. */
-
+  /*
   static int counter = 0;
   if ( counter < IMAGE_HEIGHT){
     for( j = 0; j < IMAGE_WIDTH; j++){
@@ -65,7 +72,7 @@ void detectFaces
       *result_size = 0; 
       return ;    // return to the CPU to get next line in gthe image
     }
-  }
+  } */
 
   *result_size = 0;
      
@@ -98,7 +105,7 @@ void detectFaces
 
     imageScaler     ( IMAGE_HEIGHT,
 		      IMAGE_WIDTH,	
-                      Data, 
+                      inData,
                       height,
 		      width,
                       IMG1_data

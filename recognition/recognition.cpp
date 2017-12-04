@@ -16,7 +16,7 @@ int findFaceIndex(double *wvec, double wvecs[][imgSetSize], int dists[]) {
     int index = -1;
     int minDist = -1;
     for (int i = 0; i < imgSetSize; i++) {
-#pragma HLS UNROLL
+// #pragma HLS UNROLL
         double *currVec = wvecs[i];
         int dist = vec_dist(wvec, currVec, imgSetSize);
         dists[i] = dist;
@@ -35,14 +35,14 @@ int findFaceIndex(double *wvec, double wvecs[][imgSetSize], int dists[]) {
 // return index of person recognized, -1 if not a person
 int recognizeImage(int inputImg[], int dists[]) {
     // calculate normalized image
-    int normalized[imgLen];
+    static int normalized[imgLen];
     int i, j;
     for (i = 0; i < imgLen; i++) {
         normalized[i] = inputImg[i] - avgImg[i];
     }
 
     // calculate weight vector
-    double wvec[imgSetSize];
+    static double wvec[imgSetSize];
     for (j = 0; j < imgSetSize; j++) {
         double *evec = evecs[j];
         double dist;

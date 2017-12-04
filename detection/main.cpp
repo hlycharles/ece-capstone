@@ -22,9 +22,17 @@ void nami(int rd[IN_WIDTH], int ot[20]) {
 	unsigned char Data[120][160];
 	for (int i = 0; i < 120; i++) {
 		for (int j = 0; j < 160; j++) {
-			Data[i][j] = (unsigned char)rd[i * 160 + j];
+			Data[i][j] = rd[i * 160 + j];
 		}
 	}
+
+	int checkSum = 0;
+	for (int i = 0; i < 120; i++) {
+		for (int j = 0; j < 160; j++) {
+			checkSum += (int)(Data[i][j]);
+		}
+	}
+	checkSum = checkSum % 997;
 
 	// Arguments to be passed to DUT  
 	MyRect result[RESULT_SIZE];
@@ -36,10 +44,15 @@ void nami(int rd[IN_WIDTH], int ot[20]) {
 	int res_size=0;
 	int *result_size = &res_size;
 
-
+	/*
 	for (int i = 0; i < IMAGE_HEIGHT; i+=1 ){
-		detectFaces (Data[i], result_x, result_y, result_w, result_h, result_size);
-	}
+		unsigned char row[160];
+		for (int j = 0; j < 160; j++) {
+			row[j] = Data[i * 160 + j];
+		}
+		detectFaces (row, result_x, result_y, result_w, result_h, result_size);
+	}*/
+	detectFaces(Data, result_x, result_y, result_w, result_h, result_size);
 
 
 	for (int j = 0; j < RESULT_SIZE; j++){
@@ -50,7 +63,7 @@ void nami(int rd[IN_WIDTH], int ot[20]) {
 	}
 
 	// save detection results
-	if (*result_size == 0) {
+	if (*result_size == 0 || (result[0].width < 20 && result[0].height < 20)) {
 		for (int k = 0; k < 20; k++) {
 			ot[k] = 100;
 		}
@@ -60,11 +73,12 @@ void nami(int rd[IN_WIDTH], int ot[20]) {
 	MyRect r = result[0];
 
 	// convert to 1D image
-	static int inImg[19200];
-	static int dists[6];
+	int inImg[19200];
+	int dists[8];
 	for (int i = 0; i < r.height; i++) {
 		for (int j = 0; j < r.width; j++) {
-			inImg[i * r.width + j] = (int)Data[(r.y + i)][(r.x + j)];
+			// inImg[i * r.width + j] = (int)(Data[(r.y + i)][(r.x + j)]);
+			inImg[i * r.width + j] = (int)(Data[(r.y + i)][(r.x + j)]);
 		}
     }
 	
@@ -80,10 +94,10 @@ void nami(int rd[IN_WIDTH], int ot[20]) {
 			ot[k] = r.width;
 		} else if (k == 4) {
 			ot[k] = r.height;
-		} else if (k < 11) {
+		} else if (k < 13) {
 			ot[k] = dists[k - 5];
 		} else {
-			ot[k] = 300;
+			ot[k] = checkSum;
 		}
 	}
 }

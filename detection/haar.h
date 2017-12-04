@@ -127,7 +127,7 @@ unsigned int int_sqrt   ( unsigned int  value
 
 int  myRound ( float value );
 
-void detectFaces( unsigned char Data[IMAGE_WIDTH], 
+void detectFaces( unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH], 
                   int _result_x[RESULT_SIZE], 
                   int _result_y[RESULT_SIZE], 
                   int _result_w[RESULT_SIZE], 
