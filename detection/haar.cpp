@@ -22,15 +22,14 @@ int  myRound ( float value )
 // TOP LEVEL MODULE OR DUT (DEVICE UNDER TEST) 
 //========================================================================================
 
-void detectFaces
+int detectFaces
 
 ( 
   unsigned char inData[IMAGE_HEIGHT][IMAGE_WIDTH],  // input port
   int result_x[RESULT_SIZE],          // Output ports
   int result_y[RESULT_SIZE],
   int result_w[RESULT_SIZE],
-  int result_h[RESULT_SIZE],
-  int *result_size
+  int result_h[RESULT_SIZE]
 )
 
 {
@@ -73,11 +72,9 @@ void detectFaces
       return ;    // return to the CPU to get next line in gthe image
     }
   } */
-
-  *result_size = 0;
      
   float  scaleFactor = 1.2;
-  unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH];  
+  unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH];
 
   float factor;
   int height,width;
@@ -112,7 +109,7 @@ void detectFaces
                     ); 
    
   
-    processImage       ( factor, 
+    processImage       ( factor,
                          height, 
                          width,
                          result_x_Scale,
@@ -132,7 +129,7 @@ void detectFaces
       result_w[i] = result_w_Scale[i];
       result_h[i] = result_h_Scale[i];
    }
-   *result_size = *result_size_Scale;
+   return *result_size_Scale;
 }
 
 void processImage
@@ -140,12 +137,12 @@ void processImage
 ( float factor,
   int sum_row,
   int sum_col, 
-  int *AllCandidates_x,
-  int *AllCandidates_y,
-  int *AllCandidates_w,
-  int *AllCandidates_h,
-  int *AllCandidates_size, 
-  unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH], 
+  int AllCandidates_x[],
+  int AllCandidates_y[],
+  int AllCandidates_w[],
+  int AllCandidates_h[],
+  int *AllCandidates_size,
+  unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
   MySize winSize
 )
 {
@@ -180,7 +177,7 @@ void processImage
       *AllCandidates_size=*AllCandidates_size+1;
      }      
     }   
-  } 
+  }
 }
 
 int cascadeClassifier 
@@ -378,7 +375,7 @@ void imageScaler
 (
   int src_height,
   int src_width,
-  unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH], 
+  unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH],
   int dest_height,
   int dest_width,
   unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH]
