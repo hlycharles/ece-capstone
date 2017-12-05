@@ -4,7 +4,7 @@
 const int dimension = 20;
 
 int resample(int sr, int sc, int *src, int dest[]) {
-    printf("Resizing input image...\n");
+    // printf("Resizing input image...\n");
     // currently ignore images whose one dimension is less than 20
     if (sr < dimension || sc < dimension) {
         printf("error: Fail to resize input image\n");
@@ -50,6 +50,6 @@ int resample(int sr, int sc, int *src, int dest[]) {
     }
 
     // success
-    printf("Done resizing input image\n");
+    // printf("Done resizing input image\n");
     return 0;
 }

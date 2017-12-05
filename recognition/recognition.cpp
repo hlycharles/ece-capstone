@@ -20,7 +20,7 @@ int findFaceIndex(double *wvec, double wvecs[][imgSetSize]) {
     for (int i = 0; i < imgSetSize; i++) {
         double *currVec = wvecs[i];
         int dist = vec_dist(wvec, currVec, imgSetSize);
-        printf("dist: %d\n", dist);
+        // printf("dist: %d\n", dist);
         if (minDist < 0 || dist < minDist) {
             minDist = dist;
             index = i;
