@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <ctime>
 #include <stdlib.h>
+#include <string>
 #include "./haar.h"
 #include "image.h"
 #include "../recognition/recognitionModule.h"
-#include "./120p.h"
+// #include "./120p.h"
 
 #include <time.h>
 
@@ -21,6 +22,11 @@ int main(int argc, char **argv) {
 	for (int i = 0; i < argc; i++) {
 		printf("%s\n", argv[i]);
 	} */
+
+	if (argc != 19200) {
+		printf("0*0*0*0\n");
+		return 0;
+	}
 
 	int flag;
 
@@ -51,6 +57,13 @@ int main(int argc, char **argv) {
 
 	// printf ("-- detecting faces --\r\n");
 
+	unsigned char Data[120][160];
+	for (int i = 0; i < 120; i++) {
+		for (int j = 0; j < 160; j++) {
+			Data[i][j] = (unsigned char)(std::atoi(argv[i * 160 + j]));
+		}
+	}
+
 	clock_t start = clock();
 	for (int i = 0; i < IMAGE_HEIGHT; i+=1 ){
 		/*
@@ -77,13 +90,15 @@ int main(int argc, char **argv) {
 
 	// save detection results
 	if (*result_size == 0) {
-		printf("No face detected\n");
+		printf("0*0*0*0\n");
 		return 0;
 	}
 
-	
-
 	MyRect r = result[0];
+
+	printf("%d*%d*%d*%d\n", r.x, r.y, r.width, r.height);
+
+	return 0;
 
 	/*
 	printf("\n-- starting saving result --\n");
