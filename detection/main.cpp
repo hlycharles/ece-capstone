@@ -23,8 +23,8 @@ int main(int argc, char **argv) {
 		printf("%s\n", argv[i]);
 	} */
 
-	if (argc != 19200) {
-		printf("0*0*0*0\n");
+	if (argc != 19201) {
+		printf("0*0*1*1\n");
 		return 0;
 	}
 
@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
 	unsigned char Data[120][160];
 	for (int i = 0; i < 120; i++) {
 		for (int j = 0; j < 160; j++) {
-			Data[i][j] = (unsigned char)(std::atoi(argv[i * 160 + j]));
+			Data[i][j] = (unsigned char)(atoi(argv[i * 160 + j]));
 		}
 	}
 
