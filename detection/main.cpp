@@ -15,11 +15,18 @@ int in_width = 160;
 int in_height = 120;
 int in_maxgrey = 255;
 
-int main() {
+int main(int argc, char **argv) {
+
+	/*
+	for (int i = 0; i < argc; i++) {
+		printf("%s\n", argv[i]);
+	} */
+
 	int flag;
-		 
+
+	/*
 	printf ("-- entering main function --\r\n");
-	printf ("-- loading image --\r\n");
+	printf ("-- loading image --\r\n"); */
 
 	double duration;
 
@@ -42,7 +49,7 @@ int main() {
 		}
 	} */
 
-	printf ("-- detecting faces --\r\n");
+	// printf ("-- detecting faces --\r\n");
 
 	clock_t start = clock();
 	for (int i = 0; i < IMAGE_HEIGHT; i+=1 ){
@@ -74,6 +81,8 @@ int main() {
 		return 0;
 	}
 
+	
+
 	MyRect r = result[0];
 
 	/*
@@ -104,7 +113,7 @@ int main() {
 
 	clock_t end = clock();
 	double timeUsed = ((double) (end - start)) / CLOCKS_PER_SEC;
-	printf("TIME: %f\n", timeUsed);
+	// printf("TIME: %f\n", timeUsed);
 
 	return 0;
 }
