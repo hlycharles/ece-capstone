@@ -22,7 +22,7 @@ def processImg(filepath):
             sentNum += 1
 
     totalTime = 0
-    print "sendNum:", sentNum
+    # print "sendNum:", sentNum
     start = time.time()
     for i in range(1):
         ser.write(dataIn)
@@ -30,12 +30,12 @@ def processImg(filepath):
         result = ""
         s = ser.read()
         while (s):
-            result += s
             if (s == '&'):
                 # print "complete: " + str(i)
                 break
+            result += s
             s = ser.read()
-        # print result
+        print result.split('\n')[0]
 
     end = time.time()
     totalTime += (end - start)
