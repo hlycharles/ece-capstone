@@ -3,11 +3,11 @@
 
 const int imgSize = 20;
 
-int recognition(int inImg[], int r, int c, int dists[6]) {
+int recognition(int inImg[], int r, int c, int dists[]) {
 // #pragma HLS INTERFACE axis port=inputImg
 // #pragma HLS INTERFACE axis port=result
 
-	static int resizedImg[400];
+	int resizedImg[400];
 
 	// int i;
 

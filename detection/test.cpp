@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "./haar.h"
-#include "./image.h"
 #include "../recognition/recognitionModule.h"
 #include "./120p.h"
 
 using namespace std;
+
+#define DETECT_TIMES 4
 
 int in_flag =1;
 int in_width = 160;
@@ -29,17 +30,21 @@ int main() {
 	int result_w[RESULT_SIZE];
 	int result_h[RESULT_SIZE];
 
-	int res_size=0;
-	int *result_size = &res_size;
-	int i;
+	// turn into 1D
+	unsigned char data[120][160];
+	for (int i = 0; i < 120; i++) {
+		for (int j = 0; j < 160; j++) {
+			data[i][j] = Data[i][j];
+		}
+	}
 
 	printf ("-- detecting faces --\r\n");
 
-	for ( i = 0; i < IMAGE_HEIGHT; i+=1 ){
-	  detectFaces ( Data[i], result_x, result_y, result_w, result_h, result_size);
-	}
+	for (int t = 0; t < DETECT_TIMES; t++) {
 
-	printf("\nresult_size = %d", *result_size);
+	int result_size = detectFaces(data, result_x, result_y, result_w, result_h);
+
+	printf("\nresult_size = %d", result_size);
 
 	for (int j = 0; j < RESULT_SIZE; j++){
 	result[j].x = result_x[j];
@@ -48,11 +53,11 @@ int main() {
 	result[j].height = result_h[j];
 	}
 
-	for( int i=0 ; i < *result_size ; i++ )
+	for( int i=0 ; i < result_size ; i++ )
 	printf("\n [Test Bench (main) ] detected rects: %d %d %d %d\n",result[i].x,result[i].y,result[i].width,result[i].height);
 
 	// save detection results
-	if (*result_size == 0) {
+	if (result_size == 0) {
  		return -1;
 	}
 
@@ -60,19 +65,21 @@ int main() {
 
 	// convert to 1D image
 	static int inImg[19200];
-	static int dists[6];
-	for (i = 0; i < r.height; i++) {
+	static int dists[8];
+	for (int i = 0; i < r.height; i++) {
 		for (int j = 0; j < r.width; j++) {
-			inImg[i * r.width + j] = Data[r.y + i][r.x + j];
+			inImg[i * r.width + j] = (int)(data[r.y + i][r.x + j]);
 		}
     }
 	
 	int faceIndex = recognition(inImg, r.height, r.width, dists);
-	for (i = 0; i < 6; i++) {
+	for (int i = 0; i < 8; i++) {
 		printf("dist: %d\n", dists[i]);
 	}
 
 	printf("face index: %d\n", faceIndex);
+
+	}
 
 	return 0;
 }
