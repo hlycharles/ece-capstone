@@ -39,8 +39,18 @@ void nami(int rd[IN_WIDTH], int ot[20]) {
 	result[j].height = result_h[j];
 	}
 
+	// MyRect r = result[0];
+	int bestImage = -1;
+	int bestWidth = -1;
+	for (int i = 0; i < result_size; i++) {
+		if (result[i].width >= 20 && result[i].height >= 20 && result[i].width > bestWidth) {
+			bestWidth = result[i].width;
+			bestImage = i;
+		}
+	}
+
 	// save detection results
-	if (result_size == 0 || (result[0].width < 20 && result[0].height < 20)) {
+	if (bestImage < 0) {
 		for (int k = 0; k < 20; k++) {
 			if (k < 5) {
 				ot[k] = 100;
@@ -48,14 +58,18 @@ void nami(int rd[IN_WIDTH], int ot[20]) {
 				ot[k] = result_size;
 			}
 		}
- 		return;
+	 	return;
 	}
 
-	MyRect r = result[0];
+	MyRect r = result[bestImage];
 
 	// convert to 1D image
 	int inImg[19200];
 	int dists[8];
+	r.x = r.x - 45;
+	if (r.x < 0) {
+		r.x = 0;
+	}
 	for (int i = 0; i < r.height; i++) {
 		for (int j = 0; j < r.width; j++) {
 			// inImg[i * r.width + j] = (int)(Data[(r.y + i)][(r.x + j)]);
