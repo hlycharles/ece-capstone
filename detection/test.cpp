@@ -56,21 +56,36 @@ int main() {
 	for( int i=0 ; i < result_size ; i++ )
 	printf("\n [Test Bench (main) ] detected rects: %d %d %d %d\n",result[i].x,result[i].y,result[i].width,result[i].height);
 
-	// save detection results
-	if (result_size == 0) {
- 		return -1;
-	}
-
-	MyRect r = result[0];
-
-	// convert to 1D image
-	static int inImg[19200];
-	static int dists[8];
-	for (int i = 0; i < r.height; i++) {
-		for (int j = 0; j < r.width; j++) {
-			inImg[i * r.width + j] = (int)(data[r.y + i][r.x + j]);
+	// MyRect r = result[0];
+		int bestImage = -1;
+		int bestWidth = -1;
+		for (int i = 0; i < result_size; i++) {
+			if (result[i].width >= 20 && result[i].height >= 20 && result[i].width > bestWidth) {
+				bestWidth = result[i].width;
+				bestImage = i;
+			}
 		}
-    }
+
+	// save detection results
+		if (bestImage < 0) {
+		 	return -1;
+		}
+
+		MyRect r = result[bestImage];
+
+		// convert to 1D image
+		int inImg[19200];
+		int dists[8];
+		r.x = r.x - 45;
+		if (r.x < 0) {
+			r.x = 0;
+		}
+		for (int i = 0; i < r.height; i++) {
+			for (int j = 0; j < r.width; j++) {
+				// inImg[i * r.width + j] = (int)(Data[(r.y + i)][(r.x + j)]);
+				inImg[i * r.width + j] = (int)(Data[(r.y + i)][(r.x + j)]);
+			}
+	    }
 	
 	int faceIndex = recognition(inImg, r.height, r.width, dists);
 	for (int i = 0; i < 8; i++) {
