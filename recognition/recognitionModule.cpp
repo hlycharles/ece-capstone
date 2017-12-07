@@ -25,8 +25,6 @@ int recognition(int inImg[], int r, int c) {
     return faceIndex;
 }
 
-/*
 int main() {
-    recognition(inputImg, 41, 41);
+    recognition(inputImg, 20, 20);
 }
-*/
