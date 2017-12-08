@@ -15,6 +15,16 @@ from PIL import Image
 def isImg(filename):
     return filename.endswith(".jpg")
 
+# sort images based on name
+def cmpImg(a, b):
+    indexA = (int)(a.split(".")[0])
+    indexB = (int)(b.split(".")[0])
+    if (indexA > indexB):
+        return 1
+    if (indexA == indexB):
+        return 0
+    return -1
+
 def saveImg(imgPath, file):
     img = Image.open(imgPath)
     width, height = img.size
@@ -34,7 +44,7 @@ def encodeImgs(path, destination, imgCountPath):
             imgFiles.append(filename)
     if (not path.endswith("/")):
         path += "/"
-    imgFiles.sort()
+    imgFiles.sort(cmpImg)
     if (len(imgCountPath) > 0):
         countFile = open(imgCountPath, "w")
         countFile.write(str(len(imgFiles)) + "\n")
