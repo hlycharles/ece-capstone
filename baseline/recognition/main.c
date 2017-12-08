@@ -5,7 +5,7 @@
 #include "util/io.h"
 
 const int imgSize = 20;
-const int imgSetSize = 6;
+const int imgSetSize = 32;
 const int imgLen = imgSize * imgSize;
 
 // input image
