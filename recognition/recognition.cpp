@@ -4,7 +4,7 @@
 #include "data/eval.h"
 
 const int imgSize = 20;
-const int imgSetSize = 32;
+const int imgSetSize = 60;
 // imgSize * imgSize
 const int imgLen = 400;
 
