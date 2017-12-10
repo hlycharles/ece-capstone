@@ -13,7 +13,7 @@ using namespace std;
 
 #define IN_WIDTH 19200
 
-void nami(int rd[IN_WIDTH], int ot[20]) {
+void face_sys(int rd[IN_WIDTH], int ot[5]) {
 #pragma HLS INTERFACE axis port=rd
 #pragma HLS INTERFACE axis port=ot
 
@@ -40,7 +40,6 @@ void nami(int rd[IN_WIDTH], int ot[20]) {
 	result[j].height = result_h[j];
 	}
 
-	// MyRect r = result[0];
 	int bestImage = -1;
 	int bestWidth = -1;
 	for (int i = 0; i < result_size; i++) {
@@ -50,14 +49,9 @@ void nami(int rd[IN_WIDTH], int ot[20]) {
 		}
 	}
 
-	// save detection results
 	if (bestImage < 0) {
-		for (int k = 0; k < 20; k++) {
-			if (k < 5) {
-				ot[k] = 100;
-			} else {
-				ot[k] = result_size;
-			}
+		for (int k = 0; k < 5; k++) {
+			ot[k] = 0;
 		}
 	 	return;
 	}
@@ -66,20 +60,15 @@ void nami(int rd[IN_WIDTH], int ot[20]) {
 
 	// convert to 1D image
 	int inImg[19200];
-	int dists[8];
-	r.x = r.x - 45;
-	if (r.x < 0) {
-		r.x = 0;
-	}
+	int dists[100];
 	for (int i = 0; i < r.height; i++) {
 		for (int j = 0; j < r.width; j++) {
-			// inImg[i * r.width + j] = (int)(Data[(r.y + i)][(r.x + j)]);
 			inImg[i * r.width + j] = (int)(Data[(r.y + i)][(r.x + j)]);
 		}
     }
 	
 	int faceIndex = recognition(inImg, r.height, r.width, dists);
-	for (int k = 0; k < 20; k++) {
+	for (int k = 0; k < 5; k++) {
 		if (k == 0) {
 			ot[k] = faceIndex;
 		} else if (k == 1) {
@@ -90,10 +79,6 @@ void nami(int rd[IN_WIDTH], int ot[20]) {
 			ot[k] = r.width;
 		} else if (k == 4) {
 			ot[k] = r.height;
-		} else if (k < 13) {
-			ot[k] = dists[k - 5];
-		} else {
-			ot[k] = 42;
 		}
 	}
 }
