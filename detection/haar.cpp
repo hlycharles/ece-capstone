@@ -1,5 +1,6 @@
 #include "haar.h"
 #include "sqrt.h"
+#include "ap_int.h"
 #include "haar_rcc.h"
 #include "haar_ewc.h"
 
@@ -21,19 +22,25 @@ int  myRound ( float value )
 // TOP LEVEL MODULE OR DUT (DEVICE UNDER TEST) 
 //========================================================================================
 
-void detectFaces
+int detectFaces
 
 ( 
-  unsigned char inData[IMAGE_WIDTH],  // input port
+  unsigned char inData[IMAGE_HEIGHT][IMAGE_WIDTH],  // input port
   int result_x[RESULT_SIZE],          // Output ports
   int result_y[RESULT_SIZE],
   int result_w[RESULT_SIZE],
-  int result_h[RESULT_SIZE],
-  int *result_size
+  int result_h[RESULT_SIZE]
 )
 
 {
-   static unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH];
+/*
+   unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH];
+   // ADDED
+   for (int i = 0; i < IMAGE_HEIGHT; i++) {
+	   for (int j = 0; j < IMAGE_WIDTH; j++) {
+		   Data[i][j] = inData[i][j];
+	   }
+   } */
    int i, j;
 
    int result_x_Scale[RESULT_SIZE];
@@ -47,7 +54,7 @@ void detectFaces
   * first 239 calls just load the BRAMs with the image and last 240th call does the actual face detection
   * This is a hacky way because SDSoC does not allow to send 320X240 image at once. In future sdsalloc can be 
   * used allocate the memory directly into the FPGA. */
-
+  /*
   static int counter = 0;
   if ( counter < IMAGE_HEIGHT){
     for( j = 0; j < IMAGE_WIDTH; j++){
@@ -64,12 +71,10 @@ void detectFaces
       *result_size = 0; 
       return ;    // return to the CPU to get next line in gthe image
     }
-  }
-
-  *result_size = 0;
+  } */
      
   float  scaleFactor = 1.2;
-  unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH];  
+  unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH];
 
   float factor;
   int height,width;
@@ -97,14 +102,14 @@ void detectFaces
 
     imageScaler     ( IMAGE_HEIGHT,
 		      IMAGE_WIDTH,	
-                      Data, 
+                      inData,
                       height,
 		      width,
                       IMG1_data
                     ); 
    
   
-    processImage       ( factor, 
+    processImage       ( factor,
                          height, 
                          width,
                          result_x_Scale,
@@ -124,7 +129,7 @@ void detectFaces
       result_w[i] = result_w_Scale[i];
       result_h[i] = result_h_Scale[i];
    }
-   *result_size = *result_size_Scale;
+   return *result_size_Scale;
 }
 
 void processImage
@@ -132,12 +137,12 @@ void processImage
 ( float factor,
   int sum_row,
   int sum_col, 
-  int *AllCandidates_x,
-  int *AllCandidates_y,
-  int *AllCandidates_w,
-  int *AllCandidates_h,
-  int *AllCandidates_size, 
-  unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH], 
+  int AllCandidates_x[],
+  int AllCandidates_y[],
+  int AllCandidates_w[],
+  int AllCandidates_h[],
+  int *AllCandidates_size,
+  unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
   MySize winSize
 )
 {
@@ -172,7 +177,7 @@ void processImage
       *AllCandidates_size=*AllCandidates_size+1;
      }      
     }   
-  } 
+  }
 }
 
 int cascadeClassifier 
@@ -193,7 +198,8 @@ int cascadeClassifier
   int r_index = 0;
   int stage_sum=0;
 
-  static int coord[12];
+
+  static ap_uint<25> coord[12];
   #pragma HLS array_partition variable=coord complete dim=0
 
 
@@ -303,7 +309,7 @@ int cascadeClassifier
 int weakClassifier
 (
   int stddev,
-  int coord[12],  
+  ap_uint<25> coord[12],  
   int haar_counter,
   int w_id 
 )
@@ -369,7 +375,7 @@ void imageScaler
 (
   int src_height,
   int src_width,
-  unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH], 
+  unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH],
   int dest_height,
   int dest_width,
   unsigned char IMG1_data[IMAGE_HEIGHT][IMAGE_WIDTH]

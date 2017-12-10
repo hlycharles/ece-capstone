@@ -1,11 +1,10 @@
 import sys
 import serial
 import time
-import subprocess
 from PIL import Image
 
 def processImg(filepath):
-    # ser = serial.Serial('/dev/tty.usbmodem1421', 115200, timeout = 2)
+    ser = serial.Serial('/dev/tty.usbmodem1421', 115200, timeout = 2)
     # print(ser.name)
     
     img = Image.open(filepath)
@@ -13,24 +12,14 @@ def processImg(filepath):
     sentNum = 0
     dataIn = ""
 
-    args = ["../detection/build/detection"]
-
     for y in range(height):
         for x in range(width):
             pixel = img.getpixel((x, y))
             grayPixel = (pixel[0] + pixel[1] + pixel[2]) / 3
-            args.append(str(grayPixel))
             # write pixel
             pixelStr = chr(grayPixel)
             dataIn += pixelStr
             sentNum += 1
-
-    popen = subprocess.Popen(args, stdout=subprocess.PIPE)
-    popen.wait()
-    output = popen.stdout.read()
-    print output
-
-    return
 
     totalTime = 0
     # print "sendNum:", sentNum

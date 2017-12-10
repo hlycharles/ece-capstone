@@ -1,30 +1,29 @@
-#include <stdio.h>
-
-#include "data/input.h"
 #include "./recognition.h"
 #include "../resample/resample.h"
 
 const int imgSize = 20;
-const int imgLen = 400;
 
-// output face index
-void outputFaceIndex(int faceIndex) {
-    printf("face: %d\n", faceIndex);
-}
+int recognition(int inImg[], int r, int c, int dists[]) {
+// #pragma HLS INTERFACE axis port=inputImg
+// #pragma HLS INTERFACE axis port=result
 
-int recognition(int inImg[], int r, int c) {
+	int resizedImg[400];
 
-    // resize image
-    int resizedInput[imgLen];
-    resample(r, c, &(inImg[0]), resizedInput);
+	// int i;
 
-    int faceIndex = processImage(resizedInput);
+	resample(r, c, inImg, resizedImg);
 
-    outputFaceIndex(faceIndex);
+	int faceIndex = recognizeImage(resizedImg, dists);
 
-    return faceIndex;
-}
+	// leave blank space for fault tolerance
+	/*
+	for (i = 0; i < 30; i++) {
+		if (i < 18) {
+			result[i] = faceIndex;
+		} else {
+			result[i] = dists[i % 6];
+		}
+	} */
 
-int main() {
-    recognition(inputImg, 20, 20);
+	return faceIndex;
 }

@@ -6,7 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-// #include "ap_int.h"
+#include "ap_int.h"
 
 const int ROWS = 25;
 const int COLS = 25;
@@ -14,17 +14,10 @@ const int COLS = 25;
 const int NUM_BANKS = 12;
 const int SIZE = 2913;
 
-/*
 typedef ap_uint<18> uint18_t;
 typedef ap_uint<10> uint10_t;
 typedef ap_uint<1>  bit;
 typedef ap_uint<5> uint5_t;
-*/
-
-typedef int uint18_t;
-typedef int uint10_t;
-typedef int bit;
-typedef int uint5_t;
 
 #ifndef __PARAMETERS__
 #define __PARAMETERS__
@@ -49,17 +42,10 @@ typedef int uint5_t;
 
 #endif
 
-/*
 typedef ap_uint<13> int_I;  
 typedef ap_uint<21> int_SI;
 typedef ap_uint<18> int_II;             
 typedef ap_uint<26> int_SII;
-*/
-
-typedef int int_I;  
-typedef int int_SI;
-typedef int int_II;             
-typedef int int_SII;
 
 #ifdef __cplusplus
 extern "C" {
@@ -125,7 +111,7 @@ int cascadeClassifier  ( int SUM1_data[IMAGE_HEIGHT][IMAGE_WIDTH],
                        ); 
 
 int weakClassifier      ( int stddev,
-                          int coord[12],
+                          ap_uint<25> coord[12],
                           int haar_counter,
                           int w_id                      
                         );
@@ -141,12 +127,11 @@ unsigned int int_sqrt   ( unsigned int  value
 
 int  myRound ( float value );
 
-void detectFaces( unsigned char Data[IMAGE_WIDTH], 
+int detectFaces( unsigned char Data[IMAGE_HEIGHT][IMAGE_WIDTH], 
                   int _result_x[RESULT_SIZE], 
                   int _result_y[RESULT_SIZE], 
                   int _result_w[RESULT_SIZE], 
-                  int _result_h[RESULT_SIZE], 
-                  int *result_size);
+                  int _result_h[RESULT_SIZE]);
 		
 #ifdef __cplusplus
 }

@@ -1,40 +1,28 @@
 #include <stdio.h>
-#include <ctime>
 #include <stdlib.h>
 #include <string>
 #include "./haar.h"
-#include "image.h"
+#include "./image.h"
 #include "../recognition/recognitionModule.h"
 // #include "./120p.h"
+#include "ap_int.h"
 
-#include <time.h>
+#include "hls_stream.h";
 
 using namespace std;
 
-int in_flag =1;
-int in_width = 160;
-int in_height = 120;
-int in_maxgrey = 255;
+#define IN_WIDTH 19200
 
-int main(int argc, char **argv) {
+void nami(int rd[IN_WIDTH], int ot[20]) {
+#pragma HLS INTERFACE axis port=rd
+#pragma HLS INTERFACE axis port=ot
 
-	/*
-	for (int i = 0; i < argc; i++) {
-		printf("%s\n", argv[i]);
-	} */
-
-	if (argc != 19201) {
-		printf("0*0*1*1\n");
-		return 0;
+	unsigned char Data[120][160];
+	for (int i = 0; i < 120; i++) {
+		for (int j = 0; j < 160; j++) {
+			Data[i][j] = (unsigned char)(rd[i * 160 + j]);
+		}
 	}
-
-	int flag;
-
-	/*
-	printf ("-- entering main function --\r\n");
-	printf ("-- loading image --\r\n"); */
-
-	double duration;
 
 	// Arguments to be passed to DUT  
 	MyRect result[RESULT_SIZE];
@@ -43,38 +31,7 @@ int main(int argc, char **argv) {
 	int result_w[RESULT_SIZE];
 	int result_h[RESULT_SIZE];
 
-	int res_size=0;
-	int *result_size = &res_size;
-
-	// convert to 1D image
-	/*
-	unsigned char data[19200];
-	for (int i = 0; i < 120; i++) {
-		for (int j = 0; j < 160; j++) {
-			data[i * 160 + j] = Data[i][j];
-		}
-	} */
-
-	// printf ("-- detecting faces --\r\n");
-
-	unsigned char Data[120][160];
-	for (int i = 0; i < 120; i++) {
-		for (int j = 0; j < 160; j++) {
-			Data[i][j] = (unsigned char)(atoi(argv[i * 160 + j]));
-		}
-	}
-
-	clock_t start = clock();
-	for (int i = 0; i < IMAGE_HEIGHT; i+=1 ){
-		/*
-		static unsigned char row[160];
-		for (int j = 0; j < 160; j++) {
-			row[j] = data[i * 160 + j];
-		} */
-		detectFaces (Data[i], result_x, result_y, result_w, result_h, result_size);
-	}
-
-	// printf("\nresult_size = %d", *result_size);
+	int result_size = detectFaces(Data, result_x, result_y, result_w, result_h);
 
 	for (int j = 0; j < RESULT_SIZE; j++){
 	result[j].x = result_x[j];
@@ -83,52 +40,60 @@ int main(int argc, char **argv) {
 	result[j].height = result_h[j];
 	}
 
-	/*
-	for( int i=0 ; i < *result_size ; i++ )
-	printf("\n [Test Bench (main) ] detected rects: %d %d %d %d",result[i].x,result[i].y,result[i].width,result[i].height);
-	*/
-
-	// save detection results
-	if (*result_size == 0) {
-		printf("0*0*0*0\n");
-		return 0;
+	// MyRect r = result[0];
+	int bestImage = -1;
+	int bestWidth = -1;
+	for (int i = 0; i < result_size; i++) {
+		if (result[i].width >= 20 && result[i].height >= 20 && result[i].width > bestWidth) {
+			bestWidth = result[i].width;
+			bestImage = i;
+		}
 	}
 
-	MyRect r = result[0];
-
-	printf("%d*%d*%d*%d\n", r.x, r.y, r.width, r.height);
-
-	return 0;
-
-	/*
-	printf("\n-- starting saving result --\n");
-	MyRect r = result[0];
-    FILE *fp;
-    fp = fopen("./result.txt", "w");
-	fprintf(fp, "%d\n", r.height);
-	fprintf(fp, "%d\n", r.width);
-    for (int i = r.y; i < r.y + r.height; i++) {
-		for (int j = r.x; j < r.x + r.width; j++) {
-			fprintf(fp, "%d\n", Data[i][j]);
+	// save detection results
+	if (bestImage < 0) {
+		for (int k = 0; k < 20; k++) {
+			if (k < 5) {
+				ot[k] = 100;
+			} else {
+				ot[k] = result_size;
+			}
 		}
-    }
-    fclose(fp);
-	printf("-- DONE starting saving result --\n");
-	*/
+	 	return;
+	}
+
+	MyRect r = result[bestImage];
 
 	// convert to 1D image
-	int inImg[r.width * r.height];
+	int inImg[19200];
+	int dists[8];
+	r.x = r.x - 45;
+	if (r.x < 0) {
+		r.x = 0;
+	}
 	for (int i = 0; i < r.height; i++) {
 		for (int j = 0; j < r.width; j++) {
-			inImg[i * r.width + j] = Data[r.y + i][r.x + j];
+			// inImg[i * r.width + j] = (int)(Data[(r.y + i)][(r.x + j)]);
+			inImg[i * r.width + j] = (int)(Data[(r.y + i)][(r.x + j)]);
 		}
     }
 	
-	recognition(inImg, r.height, r.width);
-
-	clock_t end = clock();
-	double timeUsed = ((double) (end - start)) / CLOCKS_PER_SEC;
-	// printf("TIME: %f\n", timeUsed);
-
-	return 0;
+	int faceIndex = recognition(inImg, r.height, r.width, dists);
+	for (int k = 0; k < 20; k++) {
+		if (k == 0) {
+			ot[k] = faceIndex;
+		} else if (k == 1) {
+			ot[k] = r.x;
+		} else if (k == 2) {
+			ot[k] = r.y;
+		} else if (k == 3) {
+			ot[k] = r.width;
+		} else if (k == 4) {
+			ot[k] = r.height;
+		} else if (k < 13) {
+			ot[k] = dists[k - 5];
+		} else {
+			ot[k] = 42;
+		}
+	}
 }
