@@ -246,7 +246,7 @@ int processImage(u32 baseAddr, XAxiDma_Config *Config, int firstFlush)
 							return XST_FAILURE;
 						}
 
-		Status = XAxiDma_SimpleTransfer(&AxiDma,(UINTPTR) RxBufferPtr, 8, XAXIDMA_DEVICE_TO_DMA);
+		Status = XAxiDma_SimpleTransfer(&AxiDma,(UINTPTR) RxBufferPtr, 20, XAXIDMA_DEVICE_TO_DMA);
 		if (Status != XST_SUCCESS) {
 			xil_printf("Receive failed\n");
 			return XST_FAILURE;
@@ -256,9 +256,9 @@ int processImage(u32 baseAddr, XAxiDma_Config *Config, int firstFlush)
 		while ((TxDone == 0 || RxDone == 0) && (Error == 0)) {}
 
 		/* Invalidate the DestBuffer before checking the data, in case the Data Cache is enabled */
-		Xil_DCacheInvalidateRange((u32)RxBufferPtr, 8);
+		Xil_DCacheInvalidateRange((u32)RxBufferPtr, 20);
 
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 5; i++) {
 			xil_printf("%d\n", RxBufferPtr[i]);
 		}
 		xil_printf("&");
